@@ -9,10 +9,7 @@ class App extends Component {
     return (
       <>
         <Wrapper>
-          <h2>
-            React. Task #1 Cross-check: React project setup. Class components.
-            Error boundary.
-          </h2>
+          <h2>Star Trek API. Class-components</h2>
 
           <TopControls />
 
