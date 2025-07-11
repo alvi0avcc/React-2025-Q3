@@ -1,35 +1,26 @@
-import { useState } from 'react';
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
+import { Component } from 'react';
 import './App.css';
+import { Wrapper } from './components/wrapper/wrapper';
+import { TopControls } from './components/top-controls/top-controls';
+import { Results } from './components/results/results';
 
-function App() {
-  const [count, setCount] = useState(0);
+class App extends Component {
+  render() {
+    return (
+      <>
+        <Wrapper>
+          <h2>
+            React. Task #1 Cross-check: React project setup. Class components.
+            Error boundary.
+          </h2>
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount(count => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="readTheDocs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  );
+          <TopControls />
+
+          <Results />
+        </Wrapper>
+      </>
+    );
+  }
 }
 
 export default App;
