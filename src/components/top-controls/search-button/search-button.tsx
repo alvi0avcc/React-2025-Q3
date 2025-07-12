@@ -8,7 +8,7 @@ interface Props {
   searchQuery: string;
   onSearch: (
     spacecrafts: Spacecraft[],
-    errorAPI: string,
+    error: Error | null,
     isLoading: boolean
   ) => void;
 }
@@ -25,13 +25,17 @@ export class SearchButton extends Component<Props> {
   handleClick = async () => {
     const { searchQuery, onSearch } = this.props;
 
-    onSearch([], '', true);
+    onSearch([], null, true);
 
     try {
-      onSearch(await spacecraftsGet(searchQuery), '', false);
+      onSearch(await spacecraftsGet(searchQuery), null, false);
     } catch (error) {
       console.error('API Error: ', error);
-      onSearch([], 'Error loading data!', false);
+      onSearch(
+        [],
+        error instanceof Error ? error : new Error(String(error)),
+        false
+      );
     }
   };
 

@@ -4,7 +4,6 @@ import styles from './wrapper.module.css';
 
 type Props = {
   children: ReactNode;
-  className?: string;
 };
 
 export class Wrapper extends Component<Props> {

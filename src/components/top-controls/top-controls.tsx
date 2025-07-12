@@ -3,8 +3,15 @@ import styles from './top-controls.module.css';
 import { SearchInputField } from './search-input-field/search-input-field';
 import { SearchButton } from './search-button/search-button';
 import React from 'react';
+import type { Spacecraft } from '@/types/types';
 
-type Props = Record<string, never>;
+type Props = {
+  onSearchResults: (
+    spacecrafts: Spacecraft[],
+    error: Error | null,
+    isLoading: boolean
+  ) => void;
+};
 
 type State = {
   searchQuery: string;
@@ -42,11 +49,7 @@ export class TopControls extends Component<Props, State> {
         <SearchButton
           ref={this.searchButtonRef}
           searchQuery={this.state.searchQuery}
-          onSearch={(spacecrafts, error, isLoading) => {
-            if (isLoading) return console.log('loading');
-            if (error) return console.log('error');
-            return console.log('spacecrafts', spacecrafts);
-          }}
+          onSearch={this.props.onSearchResults}
         />
       </div>
     );

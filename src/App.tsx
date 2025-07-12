@@ -3,19 +3,48 @@ import './App.css';
 import { Wrapper } from './components/wrapper/wrapper';
 import { TopControls } from './components/top-controls/top-controls';
 import { Results } from './components/results/results';
+import type { Spacecraft } from './types/types';
+
+type State = {
+  searchResults: Spacecraft[];
+  searchError: Error | null;
+  isLoading: boolean;
+};
 
 class App extends Component {
+  state: State = {
+    searchResults: [],
+    searchError: null,
+    isLoading: false,
+  };
+
+  handleSearchResults = (
+    spacecrafts: Spacecraft[],
+    error: Error | null,
+    isLoading: boolean
+  ) => {
+    this.setState({
+      searchResults: spacecrafts,
+      searchError: error,
+      isLoading,
+    });
+  };
+
   render() {
+    const { searchResults, searchError, isLoading } = this.state;
+
     return (
-      <>
-        <Wrapper>
-          <h2>Star Trek API. Class-components</h2>
+      <Wrapper>
+        <h2>Star Trek API. Class-components</h2>
 
-          <TopControls />
+        <TopControls onSearchResults={this.handleSearchResults} />
 
-          <Results />
-        </Wrapper>
-      </>
+        <Results
+          spacecrafts={searchResults}
+          error={searchError}
+          isLoading={isLoading}
+        />
+      </Wrapper>
     );
   }
 }
