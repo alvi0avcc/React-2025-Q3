@@ -2,6 +2,16 @@ import { baseUrl, localStorageKey } from '@/const/const';
 import type { Spacecraft } from '@/types/types';
 import { isValidSpacecrafts } from '@/utils/valid';
 
+export class ApiError extends Error {
+  public status?: number;
+
+  constructor(message: string, status?: number) {
+    super(message);
+    this.name = 'ApiError';
+    this.status = status;
+  }
+}
+
 const spacecraftsFetch = async (
   searchQuery: string
 ): Promise<Response | undefined> => {
@@ -15,9 +25,22 @@ const spacecraftsFetch = async (
       method: 'POST',
     });
 
+    console.log(response.status);
+    console.log(response.ok);
+
+    if (!response.ok) {
+      throw new ApiError(
+        `HTTP error! status: ${response.status}`,
+        response.status
+      );
+    }
+
     return response;
-  } catch {
-    return undefined;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw new ApiError(error.message, error.status);
+    }
+    throw error;
   }
 };
 
@@ -32,20 +55,25 @@ export const spacecraftsGet = async (
   try {
     const response: Response | undefined = await spacecraftsFetch(searchQuery);
 
-    if (response) {
-      const data: unknown = await response.json();
-
-      if (
-        data !== null &&
-        typeof data === 'object' &&
-        'spacecrafts' in data &&
-        Array.isArray(data.spacecrafts)
-      ) {
-        return isValidSpacecrafts(data.spacecrafts);
-      }
+    if (!response) {
+      throw new ApiError('Invalid response format');
     }
-    return [];
-  } catch {
-    return [];
+
+    const data = await response.json();
+
+    if (!data || typeof data !== 'object' || !('spacecrafts' in data)) {
+      throw new ApiError('Invalid response format');
+    }
+
+    if (!Array.isArray(data.spacecrafts)) {
+      throw new ApiError('Spacecrafts data is not an array');
+    }
+
+    return isValidSpacecrafts(data.spacecrafts);
+  } catch (error) {
+    if (error instanceof ApiError)
+      throw new ApiError(error.message, error.status);
+
+    throw new ApiError('Network request failed', undefined);
   }
 };

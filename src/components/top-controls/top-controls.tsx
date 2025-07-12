@@ -4,11 +4,12 @@ import { SearchInputField } from './search-input-field/search-input-field';
 import { SearchButton } from './search-button/search-button';
 import React from 'react';
 import type { Spacecraft } from '@/types/types';
+import type { ApiError } from '@/api/api';
 
 type Props = {
   onSearchResults: (
     spacecrafts: Spacecraft[],
-    error: Error | null,
+    error: ApiError | null,
     isLoading: boolean
   ) => void;
 };

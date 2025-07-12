@@ -4,10 +4,11 @@ import { Wrapper } from './components/wrapper/wrapper';
 import { TopControls } from './components/top-controls/top-controls';
 import { Results } from './components/results/results';
 import type { Spacecraft } from './types/types';
+import type { ApiError } from './api/api';
 
 type State = {
   searchResults: Spacecraft[];
-  searchError: Error | null;
+  searchError: ApiError | null;
   isLoading: boolean;
 };
 
@@ -20,7 +21,7 @@ class App extends Component {
 
   handleSearchResults = (
     spacecrafts: Spacecraft[],
-    error: Error | null,
+    error: ApiError | null,
     isLoading: boolean
   ) => {
     this.setState({

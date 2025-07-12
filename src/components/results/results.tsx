@@ -4,18 +4,16 @@ import { ResultsResponse } from './response/response';
 import { ResultsReject } from './reject/reject';
 import { ErrorButton } from './error-button/error-button';
 import type { Spacecraft } from '@/types/types';
+import type { ApiError } from '@/api/api';
 
 type Props = {
   spacecrafts: Spacecraft[];
-  error: Error | null;
+  error: ApiError | null;
   isLoading: boolean;
+  onRetry?: () => void;
 };
 
 export class Results extends Component<Props> {
-  constructor(props: Props) {
-    super(props);
-  }
-
   render() {
     const { spacecrafts, error, isLoading } = this.props;
 
@@ -23,7 +21,7 @@ export class Results extends Component<Props> {
       return <div className={styles.loading}>Loading spacecrafts data...</div>;
     }
 
-    if (!spacecrafts.length) {
+    if (!error && !spacecrafts.length) {
       return <div className={styles.empty}>No spacecrafts found</div>;
     }
 
@@ -32,7 +30,7 @@ export class Results extends Component<Props> {
         {!error ? (
           <ResultsResponse spacecrafts={spacecrafts} />
         ) : (
-          <ResultsReject />
+          <ResultsReject error={error} />
         )}
 
         <ErrorButton />
