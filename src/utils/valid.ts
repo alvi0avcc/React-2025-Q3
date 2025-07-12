@@ -1,4 +1,4 @@
-import type { Spacecraft } from '@/utils/types';
+import type { Spacecraft } from '@/types/types';
 
 const isValidSpacecraft = (spacecraft: unknown): spacecraft is Spacecraft => {
   return (
@@ -8,28 +8,44 @@ const isValidSpacecraft = (spacecraft: unknown): spacecraft is Spacecraft => {
     typeof spacecraft.uid === 'string' &&
     'name' in spacecraft &&
     typeof spacecraft.name === 'string' &&
-    'registry' in spacecraft &&
-    (spacecraft.registry === undefined ||
+    (!('registry' in spacecraft) ||
+      spacecraft.registry === null ||
       typeof spacecraft.registry === 'string') &&
-    'status' in spacecraft &&
-    (spacecraft.status === undefined ||
+    (!('status' in spacecraft) ||
+      spacecraft.status === null ||
       typeof spacecraft.status === 'string') &&
-    'dateStatus' in spacecraft &&
-    (spacecraft.dateStatus === undefined ||
+    (!('dateStatus' in spacecraft) ||
+      spacecraft.dateStatus === null ||
       typeof spacecraft.dateStatus === 'string') &&
-    'species' in spacecraft &&
-    (spacecraft.species === undefined ||
+    (!('species' in spacecraft) ||
+      spacecraft.species === null ||
       typeof spacecraft.species === 'string') &&
-    'owner' in spacecraft &&
-    (spacecraft.owner === undefined || typeof spacecraft.owner === 'string') &&
-    'operator' in spacecraft &&
-    (spacecraft.operator === undefined ||
-      typeof spacecraft.operator === 'string') &&
-    'affiliation' in spacecraft &&
-    (spacecraft.affiliation === undefined ||
-      typeof spacecraft.affiliation === 'string') &&
-    'spacecraftClass' in spacecraft &&
-    (spacecraft.spacecraftClass === undefined ||
+    (!('owner' in spacecraft) ||
+      spacecraft.owner === null ||
+      (spacecraft.owner !== null &&
+        typeof spacecraft.owner === 'object' &&
+        'uid' in spacecraft.owner &&
+        typeof spacecraft.owner.uid === 'string' &&
+        'name' in spacecraft.owner &&
+        typeof spacecraft.owner.name === 'string')) &&
+    (!('operator' in spacecraft) ||
+      spacecraft.operator === null ||
+      (spacecraft.operator !== null &&
+        typeof spacecraft.operator === 'object' &&
+        'uid' in spacecraft.operator &&
+        typeof spacecraft.operator.uid === 'string' &&
+        'name' in spacecraft.operator &&
+        typeof spacecraft.operator.name === 'string')) &&
+    (!('affiliation' in spacecraft) ||
+      spacecraft.affiliation === null ||
+      (spacecraft.affiliation !== null &&
+        typeof spacecraft.affiliation === 'object' &&
+        'uid' in spacecraft.affiliation &&
+        typeof spacecraft.affiliation.uid === 'string' &&
+        'name' in spacecraft.affiliation &&
+        typeof spacecraft.affiliation.name === 'string')) &&
+    (!('spacecraftClass' in spacecraft) ||
+      spacecraft.spacecraftClass === null ||
       (spacecraft.spacecraftClass !== null &&
         typeof spacecraft.spacecraftClass === 'object' &&
         'uid' in spacecraft.spacecraftClass &&
