@@ -3,3 +3,12 @@
   flex-direction: column;
   border: 1px #fff solid;
 }
+
+.loader {
+  margin: 3px;
+}
+
+.loading {
+  color: #fff;
+  background-color: #000;
+}

@@ -17,7 +17,16 @@ export class Results extends Component<Props> {
     const { spacecrafts, error, isLoading } = this.props;
 
     if (isLoading) {
-      return <div className={styles.loading}>Loading spacecrafts data...</div>;
+      return (
+        <>
+          <img
+            className={styles.loader}
+            src="/loader.gif"
+            alt="Loading spacecrafts data"
+          />
+          <div className={styles.loading}>Loading spacecrafts data...</div>
+        </>
+      );
     }
 
     if (!error && !spacecrafts.length) {
