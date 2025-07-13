@@ -21,7 +21,7 @@ export class Results extends Component<Props> {
         <>
           <img
             className={styles.loader}
-            src="/loader.gif"
+            src="./loader.gif"
             alt="Loading spacecrafts data"
           />
           <div className={styles.loading}>Loading spacecrafts data...</div>
