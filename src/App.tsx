@@ -6,6 +6,9 @@ import { Results } from './components/results/results';
 import type { Spacecraft } from './types/types';
 import type { ApiError } from './api/api';
 
+import { ErrorBoundary } from '@/components/error-boundary/error-boundary';
+import { ErrorButton } from '@/components/error-button/error-button';
+
 type State = {
   searchResults: Spacecraft[];
   searchError: ApiError | null;
@@ -35,17 +38,20 @@ class App extends Component {
     const { searchResults, searchError, isLoading } = this.state;
 
     return (
-      <Wrapper>
-        <h2>Star Trek API. Class-components</h2>
+      <ErrorBoundary>
+        <Wrapper>
+          <h2>Star Trek API. Class-components</h2>
 
-        <TopControls onSearchResults={this.handleSearchResults} />
+          <TopControls onSearchResults={this.handleSearchResults} />
 
-        <Results
-          spacecrafts={searchResults}
-          error={searchError}
-          isLoading={isLoading}
-        />
-      </Wrapper>
+          <Results
+            spacecrafts={searchResults}
+            error={searchError}
+            isLoading={isLoading}
+          />
+          <ErrorButton />
+        </Wrapper>
+      </ErrorBoundary>
     );
   }
 }

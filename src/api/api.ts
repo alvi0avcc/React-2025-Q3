@@ -25,9 +25,6 @@ const spacecraftsFetch = async (
       method: 'POST',
     });
 
-    console.log(response.status);
-    console.log(response.ok);
-
     if (!response.ok) {
       throw new ApiError(
         `HTTP error! status: ${response.status}`,

@@ -2,7 +2,6 @@ import { Component } from 'react';
 import styles from './results.module.css';
 import { ResultsResponse } from './response/response';
 import { ResultsReject } from './reject/reject';
-import { ErrorButton } from './error-button/error-button';
 import type { Spacecraft } from '@/types/types';
 import type { ApiError } from '@/api/api';
 
@@ -32,8 +31,6 @@ export class Results extends Component<Props> {
         ) : (
           <ResultsReject error={error} />
         )}
-
-        <ErrorButton />
       </div>
     );
   }
