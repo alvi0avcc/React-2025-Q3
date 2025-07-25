@@ -6,7 +6,7 @@ import { Route, Routes } from 'react-router';
 import HomePage from '@/pages/HomePage/HomePage';
 import About from '@/pages/About/About';
 import Page404 from '@/pages/Page404/Page404';
-import Header from '@/pages/Header/Header';
+import Header from '@/components/header/header';
 
 const App = () => {
   return (
