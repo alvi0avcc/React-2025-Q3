@@ -13,14 +13,14 @@ type Props = {
 export const Results = ({ spacecrafts, error, isLoading }: Props) => {
   if (isLoading) {
     return (
-      <>
+      <section className={styles.results}>
         <img
           className={styles.loader}
           src="./loader.gif"
           alt="Loading spacecrafts data"
         />
         <div className={styles.loading}>Loading spacecrafts data...</div>
-      </>
+      </section>
     );
   }
 

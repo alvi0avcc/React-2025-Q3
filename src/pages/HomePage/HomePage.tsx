@@ -10,7 +10,7 @@ type State = {
   isLoading: boolean;
 };
 
-const MainPage = () => {
+const HomePage = () => {
   const [state, setState] = useState<State>({
     searchResults: [],
     searchError: null,
@@ -46,4 +46,4 @@ const MainPage = () => {
   );
 };
 
-export default MainPage;
+export default HomePage;

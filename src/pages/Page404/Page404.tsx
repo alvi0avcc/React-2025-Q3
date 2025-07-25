@@ -1,8 +1,13 @@
+import styles from './page404.module.css';
+import { NavLink } from 'react-router';
+
 const Page404 = () => {
   return (
-    <>
-      <h2>404</h2>
-    </>
+    <main className={styles.main}>
+      <NavLink className={styles.goHome} to="/" end>
+        Back to Home Page
+      </NavLink>
+    </main>
   );
 };
 
