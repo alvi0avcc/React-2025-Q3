@@ -48,22 +48,22 @@ vi.mock('@/components/results/results', () => ({
   },
 }));
 
-import App from '@/App';
+import HomePage from '@/pages/HomePage/HomePage';
 
-describe('App', () => {
+describe('HomePage', () => {
   beforeEach(() => {
     mockResultsProps.length = 0;
   });
 
   it('render', () => {
-    render(<App />);
+    render(<HomePage />);
     expect(screen.getByText(/Star Trek API/i)).toBeInTheDocument();
     expect(screen.getByTestId('top-controls')).toBeInTheDocument();
     expect(screen.getByTestId('results')).toBeInTheDocument();
   });
 
   it('search results', async () => {
-    render(<App />);
+    render(<HomePage />);
     await userEvent.click(screen.getByText('Search'));
     const { spacecrafts = undefined } = mockResultsProps.at(-1) || {};
     expect(spacecrafts).toEqual([{ uid: '1', name: 'Enterprise' }]);
