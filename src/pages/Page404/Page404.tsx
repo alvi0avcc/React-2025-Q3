@@ -3,7 +3,7 @@ import { NavLink } from 'react-router';
 
 const Page404 = () => {
   return (
-    <main className={styles.main}>
+    <main className={styles.main404}>
       <NavLink className={styles.goHome} to="/" end>
         Back to Home Page
       </NavLink>
