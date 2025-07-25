@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import './App.css';
 import { Wrapper } from './components/wrapper/wrapper';
 import { TopControls } from './components/top-controls/top-controls';
@@ -7,7 +7,6 @@ import type { Spacecraft } from './types/types';
 import type { ApiError } from './api/api';
 
 import { ErrorBoundary } from '@/components/error-boundary/error-boundary';
-import { ErrorButton } from '@/components/error-button/error-button';
 
 type State = {
   searchResults: Spacecraft[];
@@ -15,45 +14,42 @@ type State = {
   isLoading: boolean;
 };
 
-class App extends Component {
-  state: State = {
+const App = () => {
+  const [state, setState] = useState<State>({
     searchResults: [],
     searchError: null,
     isLoading: false,
-  };
+  });
 
-  handleSearchResults = (
+  const handleSearchResults = (
     spacecrafts: Spacecraft[],
     error: ApiError | null,
     isLoading: boolean
   ) => {
-    this.setState({
+    setState({
       searchResults: spacecrafts,
       searchError: error,
       isLoading,
     });
   };
 
-  render() {
-    const { searchResults, searchError, isLoading } = this.state;
+  const { searchResults, searchError, isLoading } = state;
 
-    return (
-      <ErrorBoundary>
-        <Wrapper>
-          <h2>Star Trek API. Class-components</h2>
+  return (
+    <ErrorBoundary>
+      <Wrapper>
+        <h2>Star Trek API. Functional-components</h2>
 
-          <TopControls onSearchResults={this.handleSearchResults} />
+        <TopControls onSearchResults={handleSearchResults} />
 
-          <Results
-            spacecrafts={searchResults}
-            error={searchError}
-            isLoading={isLoading}
-          />
-          <ErrorButton />
-        </Wrapper>
-      </ErrorBoundary>
-    );
-  }
-}
+        <Results
+          spacecrafts={searchResults}
+          error={searchError}
+          isLoading={isLoading}
+        />
+      </Wrapper>
+    </ErrorBoundary>
+  );
+};
 
 export default App;

@@ -1,10 +1,9 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import styles from './top-controls.module.css';
 import { SearchInputField } from './search-input-field/search-input-field';
 import { SearchButton } from './search-button/search-button';
-import React from 'react';
 import type { Spacecraft } from '@/types/types';
-import type { ApiError } from '@/api/api';
+import { localStorageGet, type ApiError } from '@/api/api';
 
 type Props = {
   onSearchResults: (
@@ -14,45 +13,32 @@ type Props = {
   ) => void;
 };
 
-type State = {
-  searchQuery: string;
+export const TopControls = ({ onSearchResults }: Props) => {
+  const [searchQuery, setSearchQuery] = useState(localStorageGet());
+
+  const [triggerSearch, setTriggerSearch] = useState(false);
+
+  const handleSearchInputChange = (query: string) => {
+    setSearchQuery(query);
+  };
+
+  const handleSearchRequest = () => {
+    setTriggerSearch(prev => !prev);
+  };
+
+  return (
+    <div className={styles.topControls}>
+      <SearchInputField
+        initialValue={searchQuery}
+        onInputChange={handleSearchInputChange}
+        onSearchRequest={handleSearchRequest}
+      />
+
+      <SearchButton
+        searchQuery={searchQuery}
+        onSearch={onSearchResults}
+        triggerSearch={triggerSearch}
+      />
+    </div>
+  );
 };
-
-export class TopControls extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      searchQuery: localStorage.getItem('searchQuery') || '',
-    };
-  }
-
-  private searchButtonRef = React.createRef<SearchButton>();
-
-  handleSearchInputChange = (query: string) => {
-    this.setState({ searchQuery: query });
-  };
-
-  handleSearchRequest = () => {
-    if (this.searchButtonRef.current) {
-      this.searchButtonRef.current.performSearch();
-    }
-  };
-
-  render() {
-    return (
-      <div className={styles.topControls}>
-        <SearchInputField
-          initialValue={this.state.searchQuery}
-          onInputChange={this.handleSearchInputChange}
-          onSearchRequest={this.handleSearchRequest}
-        />
-
-        <SearchButton
-          ref={this.searchButtonRef}
-          searchQuery={this.state.searchQuery}
-          onSearch={this.props.onSearchResults}
-        />
-      </div>
-    );
-  }
-}

@@ -6,6 +6,7 @@
 
 .loader {
   margin: 3px;
+  border-radius: 50%;
 }
 
 .loading {

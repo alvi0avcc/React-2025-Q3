@@ -41,6 +41,10 @@ const spacecraftsFetch = async (
   }
 };
 
+export const localStorageGet = (): string => {
+  return localStorage.getItem(localStorageKey) || '';
+};
+
 const localStorageSet = async (value: string): Promise<void> => {
   localStorage.setItem(localStorageKey, value);
   return;

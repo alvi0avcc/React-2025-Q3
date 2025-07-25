@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useEffect } from 'react';
 import styles from './search-button.module.css';
 
 import type { Spacecraft } from '@/types/types';
@@ -11,24 +11,19 @@ interface Props {
     error: Error | null,
     isLoading: boolean
   ) => void;
+  triggerSearch?: boolean;
 }
 
-export class SearchButton extends Component<Props> {
-  componentDidMount(): void {
-    this.handleClick();
-  }
-
-  performSearch = () => {
-    this.handleClick();
-  };
-
-  handleClick = async () => {
-    const { searchQuery, onSearch } = this.props;
-
+export const SearchButton = ({
+  searchQuery,
+  onSearch,
+  triggerSearch = false,
+}: Props) => {
+  const search = async () => {
     onSearch([], null, true);
-
     try {
-      onSearch(await spacecraftsGet(searchQuery), null, false);
+      const results = await spacecraftsGet(searchQuery);
+      onSearch(results, null, false);
     } catch (error) {
       console.error('API Error: ', error);
       onSearch(
@@ -39,11 +34,19 @@ export class SearchButton extends Component<Props> {
     }
   };
 
-  render() {
-    return (
-      <button className={styles.searchButton} onClick={this.handleClick}>
-        Search
-      </button>
-    );
-  }
-}
+  useEffect(() => {
+    search();
+  }, []);
+
+  useEffect(() => {
+    if (triggerSearch) {
+      search();
+    }
+  }, [triggerSearch]);
+
+  return (
+    <button className={styles.searchButton} onClick={search}>
+      Search
+    </button>
+  );
+};

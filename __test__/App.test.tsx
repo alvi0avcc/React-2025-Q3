@@ -31,9 +31,6 @@ vi.mock('@/components/error-boundary/error-boundary', () => ({
     <>{children}</>
   ),
 }));
-vi.mock('@/components/error-button/error-button', () => ({
-  ErrorButton: () => <button data-testid="error-button" />,
-}));
 
 const mockResultsProps: {
   spacecrafts: Spacecraft[];
@@ -63,7 +60,6 @@ describe('App', () => {
     expect(screen.getByText(/Star Trek API/i)).toBeInTheDocument();
     expect(screen.getByTestId('top-controls')).toBeInTheDocument();
     expect(screen.getByTestId('results')).toBeInTheDocument();
-    expect(screen.getByTestId('error-button')).toBeInTheDocument();
   });
 
   it('search results', async () => {
