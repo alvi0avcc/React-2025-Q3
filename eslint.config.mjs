@@ -14,6 +14,7 @@ export default tseslint
         'dist/',
         'node_modules/',
         'build/',
+        '__test__/',
         '*.log',
         '.coverage/',
         '.vscode/',
@@ -23,6 +24,7 @@ export default tseslint
         '.DS_Store',
         'coverage/',
         'tests',
+        '*.config.ts',
       ],
     },
     {
@@ -72,6 +74,19 @@ export default tseslint
         '@typescript-eslint/member-ordering': 'error',
         '@typescript-eslint/no-misused-promises': 'off',
         '@typescript-eslint/no-unsafe-enum-comparison': 'off',
+        '@typescript-eslint/no-floating-promises': [
+          'error',
+          {
+            ignoreVoid: true,
+            ignoreIIFE: true,
+          },
+        ],
+        'unicorn/consistent-function-scoping': [
+          'warn',
+          {
+            checkArrowFunctions: false,
+          },
+        ],
         'class-methods-use-this': 'off',
         'unicorn/max-func-body-length': 'off',
         'unicorn/no-empty-file': 'off',

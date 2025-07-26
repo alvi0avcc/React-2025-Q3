@@ -43,7 +43,7 @@ describe('isValidSpacecrafts', () => {
 });
 
 class MyApiError extends Error {
-  status?: number;
+  public status?: number;
   constructor(message: string, status?: number) {
     super(message);
     this.name = 'ApiError';
@@ -58,7 +58,7 @@ describe('isApiError', () => {
   });
 
   it('returns false or throws an error for invalid objects', () => {
-    expect(isApiError(new Error())).toBe(false);
+    expect(isApiError(new Error('Unknown error'))).toBe(false);
     expect(isApiError(new Error('fail'))).toBe(false);
   });
 });

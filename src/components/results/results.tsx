@@ -24,7 +24,7 @@ export const Results = ({ spacecrafts, error, isLoading }: Props) => {
     );
   }
 
-  if (!error && !spacecrafts.length) {
+  if (!error && spacecrafts.length === 0) {
     return <div className={styles.empty}>No spacecrafts found</div>;
   }
 

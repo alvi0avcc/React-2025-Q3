@@ -15,3 +15,19 @@ type Element = {
   uid: string;
   name: string;
 };
+
+export interface PaginationOptions {
+  pageNumber: number;
+  pageSize: number;
+  maxItems?: number;
+}
+
+export interface SpacecraftsTotalInfo {
+  firstPage: boolean;
+  lastPage: boolean;
+  numberOfElements: number;
+  pageNumber: number;
+  pageSize: number;
+  totalElements: number;
+  totalPages: number;
+}

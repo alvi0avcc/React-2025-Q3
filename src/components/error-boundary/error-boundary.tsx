@@ -12,24 +12,20 @@ interface Props {
 }
 
 export class ErrorBoundary extends Component<Props, State> {
-  state: State = {
+  public state: State = {
     hasError: false,
     error: null,
   };
 
-  static getDerivedStateFromError(error: Error): State {
+  public static getDerivedStateFromError(error: Error): State {
     return { hasError: true, error };
   }
 
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
+  public componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
     console.error('Error caught by boundary:', error, errorInfo);
   }
 
-  handleReset = () => {
-    this.setState({ hasError: false, error: null });
-  };
-
-  render() {
+  public render() {
     if (this.state.hasError) {
       return (
         <div className={styles.back}>
@@ -44,4 +40,8 @@ export class ErrorBoundary extends Component<Props, State> {
 
     return this.props.children;
   }
+
+  private handleReset = () => {
+    this.setState({ hasError: false, error: null });
+  };
 }

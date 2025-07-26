@@ -1,6 +1,16 @@
-import { baseUrl, localStorageKey } from '@/const/const';
-import type { Spacecraft } from '@/types/types';
-import { isValidSpacecrafts } from '@/utils/valid';
+import {
+  baseUrl,
+  defaultPagination,
+  delayBetweenRequests,
+  localStorageKey,
+} from '@/const/const';
+import type {
+  PaginationOptions,
+  Spacecraft,
+  SpacecraftsTotalInfo,
+} from '@/types/types';
+import pause from '@/utils/pause';
+import { isSpacecraftsTotalInfo, isValidSpacecrafts } from '@/utils/valid';
 
 export class ApiError extends Error {
   public status?: number;
@@ -12,13 +22,29 @@ export class ApiError extends Error {
   }
 }
 
-const spacecraftsFetch = async (
-  searchQuery: string
-): Promise<Response | undefined> => {
+export const buildSearchParams = (
+  searchQuery: string,
+  options: PaginationOptions = defaultPagination
+): URLSearchParams => {
   const params = new URLSearchParams();
   const query = searchQuery.trim();
-  params.append('name', query);
+  params.set('name', query);
+
+  params.set(
+    'pageNumber',
+    `${options.pageNumber || defaultPagination.pageNumber}`
+  );
+  params.set('pageSize', `${options.pageSize || defaultPagination.pageSize}`);
+
   localStorageSet(query);
+
+  return params;
+};
+
+const spacecraftsFetch = async (
+  params: URLSearchParams
+): Promise<Response | undefined> => {
+  await pause(delayBetweenRequests);
 
   try {
     const response: Response = await fetch(`${baseUrl}?${params.toString()}`, {
@@ -45,16 +71,18 @@ export const localStorageGet = (): string => {
   return localStorage.getItem(localStorageKey) || '';
 };
 
-const localStorageSet = async (value: string): Promise<void> => {
+const localStorageSet = (value: string): void => {
   localStorage.setItem(localStorageKey, value);
-  return;
 };
 
 export const spacecraftsGet = async (
-  searchQuery: string
-): Promise<Spacecraft[]> => {
+  params: URLSearchParams
+): Promise<{
+  spacecraft: Spacecraft[];
+  info: SpacecraftsTotalInfo | undefined;
+}> => {
   try {
-    const response: Response | undefined = await spacecraftsFetch(searchQuery);
+    const response: Response | undefined = await spacecraftsFetch(params);
 
     if (!response) {
       throw new ApiError('Invalid response format');
@@ -70,7 +98,13 @@ export const spacecraftsGet = async (
       throw new ApiError('Spacecrafts data is not an array');
     }
 
-    return isValidSpacecrafts(data.spacecrafts);
+    const info: SpacecraftsTotalInfo | undefined = isSpacecraftsTotalInfo(
+      data.page
+    )
+      ? data.page
+      : undefined;
+
+    return { spacecraft: isValidSpacecrafts(data.spacecrafts), info: info };
   } catch (error) {
     if (error instanceof ApiError)
       throw new ApiError(error.message, error.status);

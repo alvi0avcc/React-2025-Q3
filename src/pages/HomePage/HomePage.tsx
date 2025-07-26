@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { TopControls } from '@/components/top-controls/top-controls';
 import { Results } from '@/components/results/results';
-import type { Spacecraft } from '@/types/types';
+import type { Spacecraft, SpacecraftsTotalInfo } from '@/types/types';
 import type { ApiError } from '@/api/api';
 
 type State = {
@@ -19,6 +19,7 @@ const HomePage = () => {
 
   const handleSearchResults = (
     spacecrafts: Spacecraft[],
+    info: SpacecraftsTotalInfo | undefined,
     error: ApiError | null,
     isLoading: boolean
   ) => {

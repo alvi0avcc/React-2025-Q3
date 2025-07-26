@@ -10,21 +10,23 @@ export const ResultsReject = ({ error }: Props) => {
     if (!isApiError(error)) return null;
 
     switch (error.status) {
-      case 404:
+      case 404: {
         return (
           <p className={styles.hint}>
             The requested resource was not found. Please check your search
             query.
           </p>
         );
-      case 405:
+      }
+      case 405: {
         return (
           <p className={styles.hint}>
             Method Not Allowed: This endpoint does not accept the request method
             used.
           </p>
         );
-      default:
+      }
+      default: {
         if ((error.status ?? 0) >= 500) {
           return (
             <p className={styles.hint}>
@@ -33,6 +35,7 @@ export const ResultsReject = ({ error }: Props) => {
           );
         }
         return null;
+      }
     }
   };
 

@@ -1,13 +1,20 @@
 import { useEffect } from 'react';
 import styles from './search-button.module.css';
 
-import type { Spacecraft } from '@/types/types';
-import { spacecraftsGet } from '@/api/api';
+import type {
+  PaginationOptions,
+  Spacecraft,
+  SpacecraftsTotalInfo,
+} from '@/types/types';
+
+import { buildSearchParams, spacecraftsGet } from '@/api/api';
 
 interface Props {
   searchQuery: string;
+  pagination: PaginationOptions;
   onSearch: (
     spacecrafts: Spacecraft[],
+    info: SpacecraftsTotalInfo | undefined,
     error: Error | null,
     isLoading: boolean
   ) => void;
@@ -16,18 +23,22 @@ interface Props {
 
 export const SearchButton = ({
   searchQuery,
+  pagination,
   onSearch,
   triggerSearch = false,
 }: Props) => {
   const search = async () => {
-    onSearch([], null, true);
+    onSearch([], undefined, null, true);
     try {
-      const results = await spacecraftsGet(searchQuery);
-      onSearch(results, null, false);
+      const results = await spacecraftsGet(
+        buildSearchParams(searchQuery, pagination)
+      );
+      onSearch(results.spacecraft, results.info, null, false);
     } catch (error) {
-      console.error('API Error: ', error);
+      console.error('API Error:', error);
       onSearch(
         [],
+        undefined,
         error instanceof Error ? error : new Error(String(error)),
         false
       );
@@ -35,13 +46,11 @@ export const SearchButton = ({
   };
 
   useEffect(() => {
-    search();
+    void search();
   }, []);
 
   useEffect(() => {
-    if (triggerSearch) {
-      search();
-    }
+    void search();
   }, [triggerSearch]);
 
   return (

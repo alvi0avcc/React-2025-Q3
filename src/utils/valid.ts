@@ -1,5 +1,5 @@
 import type { ApiError } from '@/api/api';
-import type { Spacecraft } from '@/types/types';
+import type { Spacecraft, SpacecraftsTotalInfo } from '@/types/types';
 
 const isValidSpacecraft = (spacecraft: unknown): spacecraft is Spacecraft => {
   return (
@@ -63,3 +63,23 @@ export const isValidSpacecrafts = (data: unknown[]): Spacecraft[] => {
 export const isApiError = (error: Error): error is ApiError => {
   return 'status' in error;
 };
+
+export function isSpacecraftsTotalInfo(
+  obj: unknown
+): obj is SpacecraftsTotalInfo {
+  if (typeof obj !== 'object' || obj === null) {
+    return false;
+  }
+
+  const requiredKeys: Array<keyof SpacecraftsTotalInfo> = [
+    'firstPage',
+    'lastPage',
+    'numberOfElements',
+    'pageNumber',
+    'pageSize',
+    'totalElements',
+    'totalPages',
+  ];
+
+  return requiredKeys.every(key => key in obj);
+}
