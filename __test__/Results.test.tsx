@@ -1,38 +1,52 @@
 import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router';
 import { Results } from '@/components/results/results';
+import type { Spacecraft } from '@/types/types';
 
-const spacecrafts = [
+const mockSpacecrafts: Spacecraft[] = [
   { uid: '1', name: 'Enterprise' },
   { uid: '2', name: 'Voyager' },
 ];
 
 describe('Results', () => {
-  it('show loader during - isLoading', () => {
-    render(<Results spacecrafts={[]} error={null} isLoading={true} />);
+  it('should show loader when isLoading is true', () => {
+    render(
+      <MemoryRouter>
+        <Results spacecrafts={[]} error={null} isLoading={true} />
+      </MemoryRouter>
+    );
     expect(screen.getByText(/loading/i)).toBeInTheDocument();
   });
 
-  it('Show error', () => {
+  it('should show error when error exists', () => {
     render(
-      <Results
-        spacecrafts={[]}
-        error={{ name: 'ApiError', message: 'Error API' }}
-        isLoading={false}
-      />
+      <MemoryRouter>
+        <Results
+          spacecrafts={[]}
+          error={{ name: 'ApiError', message: 'Error API' }}
+          isLoading={false}
+        />
+      </MemoryRouter>
     );
     expect(screen.getByText(/Error Loading Data/i)).toBeInTheDocument();
   });
 
-  it('List of results', () => {
+  it('should display list of results when data is available', () => {
     render(
-      <Results spacecrafts={spacecrafts} error={null} isLoading={false} />
+      <MemoryRouter>
+        <Results spacecrafts={mockSpacecrafts} error={null} isLoading={false} />
+      </MemoryRouter>
     );
     expect(screen.getByText(/enterprise/i)).toBeInTheDocument();
     expect(screen.getByText(/voyager/i)).toBeInTheDocument();
   });
 
-  it('If list of results is empty', () => {
-    render(<Results spacecrafts={[]} error={null} isLoading={false} />);
+  it('should show empty state when no results found', () => {
+    render(
+      <MemoryRouter>
+        <Results spacecrafts={[]} error={null} isLoading={false} />
+      </MemoryRouter>
+    );
     expect(screen.getByText(/no spacecrafts found/i)).toBeInTheDocument();
   });
 });

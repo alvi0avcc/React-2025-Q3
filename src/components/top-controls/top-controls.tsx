@@ -10,7 +10,7 @@ import type {
 import { localStorageGet, type ApiError } from '@/api/api';
 import { Pagination } from './pagination/pagination';
 import { defaultPagination } from '@/const/const';
-import { useSearchParams } from 'react-router';
+import { useNavigate, useSearchParams } from 'react-router';
 
 type Props = {
   onSearchResults: (
@@ -19,9 +19,14 @@ type Props = {
     error: ApiError | null,
     isLoading: boolean
   ) => void;
+  spacecraftSelectedId?: number | null;
 };
 
-export const TopControls = ({ onSearchResults }: Props) => {
+export const TopControls = ({
+  onSearchResults,
+  spacecraftSelectedId,
+}: Props) => {
+  const navigate = useNavigate();
   const [totalPages, setTotalPages] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState(localStorageGet());
@@ -72,9 +77,13 @@ export const TopControls = ({ onSearchResults }: Props) => {
   useEffect(() => {
     const params = new URLSearchParams();
     params.set('page', `${pagination.pageNumber}`);
-
-    setSearchParams(params, { replace: true });
-  }, [pagination, setSearchParams]);
+    if (spacecraftSelectedId !== null) {
+      params.set('id', `${spacecraftSelectedId}`);
+      void navigate(`details?${params.toString()}`, { replace: true });
+    } else {
+      setSearchParams(params, { replace: true });
+    }
+  }, [pagination, setSearchParams, spacecraftSelectedId]);
 
   return (
     <div className={styles.topControls}>

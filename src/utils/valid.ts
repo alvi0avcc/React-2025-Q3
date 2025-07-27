@@ -83,3 +83,10 @@ export function isSpacecraftsTotalInfo(
 
   return requiredKeys.every(key => key in obj);
 }
+
+export const getDisplayValue = (
+  value: string | undefined,
+  replacement = 'hidden'
+) => {
+  return value?.trim() ? value : replacement;
+};

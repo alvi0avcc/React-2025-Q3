@@ -17,6 +17,8 @@ const HomePage = () => {
     isLoading: false,
   });
 
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+
   const handleSearchResults = (
     spacecrafts: Spacecraft[],
     info: SpacecraftsTotalInfo | undefined,
@@ -30,18 +32,26 @@ const HomePage = () => {
     });
   };
 
+  const onSpacecraftSelected = (id: number) => {
+    setSelectedId(id);
+  };
+
   const { searchResults, searchError, isLoading } = state;
 
   return (
     <>
       <h2>Star Trek API. Functional-components</h2>
 
-      <TopControls onSearchResults={handleSearchResults} />
+      <TopControls
+        onSearchResults={handleSearchResults}
+        spacecraftSelectedId={selectedId}
+      />
 
       <Results
         spacecrafts={searchResults}
         error={searchError}
         isLoading={isLoading}
+        onSpacecraftSelected={onSpacecraftSelected}
       />
     </>
   );

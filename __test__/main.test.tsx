@@ -22,7 +22,7 @@ vi.mock('react-dom/client', () => {
 import '../src/main';
 
 describe('main.tsx', () => {
-  it('рендерит App в root', () => {
+  it('renders App to root', () => {
     expect(globalThis.__RENDER_MOCK__).toHaveBeenCalled();
   });
 });

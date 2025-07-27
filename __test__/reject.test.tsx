@@ -10,7 +10,7 @@ describe('ResultsReject', () => {
     expect(screen.getByText(/error api/i)).toBeInTheDocument();
   });
 
-  it('404', () => {
+  it('displays 404 not found message', () => {
     render(
       <ResultsReject
         error={{ name: 'ApiError', message: 'Not found', status: 404 }}
@@ -21,7 +21,7 @@ describe('ResultsReject', () => {
     ).toBeInTheDocument();
   });
 
-  it('405', () => {
+  it('displays 405 Method Not Allowed', () => {
     render(
       <ResultsReject
         error={{ name: 'ApiError', message: 'Method Not Allowed', status: 405 }}

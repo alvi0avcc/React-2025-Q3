@@ -1,4 +1,5 @@
 .response {
+  display: flex;
   width: 100%;
   overflow-x: auto;
 }
@@ -11,6 +12,11 @@
 
 .table > tr {
   border: 1px dotted;
+}
+
+tr:hover {
+  background-color: #5f9ea0;
+  cursor: pointer;
 }
 
 .table > thead > tr {

@@ -1,6 +1,6 @@
 .results {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   border: 1px #fff solid;
   align-items: center;
 }

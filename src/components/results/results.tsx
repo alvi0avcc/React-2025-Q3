@@ -8,9 +8,15 @@ type Props = {
   spacecrafts: Spacecraft[];
   error: ApiError | null;
   isLoading: boolean;
+  onSpacecraftSelected?: (id: number) => void;
 };
 
-export const Results = ({ spacecrafts, error, isLoading }: Props) => {
+export const Results = ({
+  spacecrafts,
+  error,
+  isLoading,
+  onSpacecraftSelected,
+}: Props) => {
   if (isLoading) {
     return (
       <section className={styles.results}>
@@ -31,7 +37,10 @@ export const Results = ({ spacecrafts, error, isLoading }: Props) => {
   return (
     <div className={styles.results}>
       {!error ? (
-        <ResultsResponse spacecrafts={spacecrafts} />
+        <ResultsResponse
+          spacecrafts={spacecrafts}
+          onSpacecraftSelected={onSpacecraftSelected}
+        />
       ) : (
         <ResultsReject error={error} />
       )}
