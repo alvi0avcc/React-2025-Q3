@@ -1,8 +1,23 @@
-import { render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { MemoryRouter, useNavigate } from 'react-router';
 import { ResultsResponse } from '@/components/results/response/response';
+import { vi } from 'vitest';
+import { getDisplayValue } from '@/utils/valid';
 
-const spacecrafts = [
+// Mock the hooks and utility function
+vi.mock('react-router', async () => {
+  const actual = await vi.importActual('react-router');
+  return {
+    ...actual,
+    useNavigate: vi.fn(),
+  };
+});
+
+vi.mock('@/utils/valid', () => ({
+  getDisplayValue: vi.fn(value => value ?? 'hidden'),
+}));
+
+const mockSpacecrafts = [
   {
     uid: '1',
     name: 'Enterprise',
@@ -17,55 +32,75 @@ const spacecrafts = [
   },
 ];
 
-describe('ResultsResponse', () => {
-  it('should display list of spacecrafts', () => {
-    render(
-      <MemoryRouter>
-        <ResultsResponse spacecrafts={spacecrafts} />
-      </MemoryRouter>
-    );
-    expect(screen.getByText(/enterprise/i)).toBeInTheDocument();
-    expect(screen.getByText(/voyager/i)).toBeInTheDocument();
+describe('ResultsResponse Component', () => {
+  const mockNavigate = vi.fn();
+  const mockOnSpacecraftSelected = vi.fn();
+
+  beforeEach(() => {
+    (useNavigate as jest.Mock).mockReturnValue(mockNavigate);
+    mockNavigate.mockClear();
+    mockOnSpacecraftSelected.mockClear();
   });
 
-  it('should display spacecraft class type', () => {
+  it('should render spacecraft table with correct data', () => {
     render(
       <MemoryRouter>
-        <ResultsResponse spacecrafts={spacecrafts} />
+        <ResultsResponse spacecrafts={mockSpacecrafts} />
       </MemoryRouter>
     );
-    expect(screen.getAllByText(/starship/i).length).toBe(2);
+
+    expect(screen.getByText('Enterprise')).toBeInTheDocument();
+    expect(screen.getByText('Voyager')).toBeInTheDocument();
+    expect(screen.getAllByText('Starship')).toHaveLength(2);
+    expect(screen.getByText('Active')).toBeInTheDocument();
+    expect(screen.getByText('Lost')).toBeInTheDocument();
   });
 
-  it('should display spacecraft status', () => {
+  it('should handle missing optional fields', () => {
+    const minimalData = [{ uid: '3', name: 'Defiant' }];
     render(
       <MemoryRouter>
-        <ResultsResponse spacecrafts={spacecrafts} />
+        <ResultsResponse spacecrafts={minimalData} />
       </MemoryRouter>
     );
-    expect(screen.getByText(/active/i)).toBeInTheDocument();
-    expect(screen.getByText(/lost/i)).toBeInTheDocument();
+
+    expect(screen.getByText('Defiant')).toBeInTheDocument();
+    expect(screen.getAllByText('hidden')).toHaveLength(2);
   });
 
-  it('should show "hidden" for missing class or status', () => {
-    const data = [{ uid: '3', name: 'Defiant' }];
+  it('should not navigate when no onSpacecraftSelected callback', () => {
     render(
       <MemoryRouter>
-        <ResultsResponse spacecrafts={data} />
+        <ResultsResponse spacecrafts={mockSpacecrafts} />
       </MemoryRouter>
     );
-    expect(screen.getByText(/defiant/i)).toBeInTheDocument();
-    expect(screen.getAllByText(/hidden/i).length).toBe(2);
+
+    fireEvent.click(screen.getByText('Enterprise'));
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
 
-  it('should display empty table when no spacecrafts', () => {
+  it('should render empty table when no spacecrafts', () => {
     render(
       <MemoryRouter>
         <ResultsResponse spacecrafts={[]} />
       </MemoryRouter>
     );
-    const rowgroups = screen.getAllByRole('rowgroup');
-    const tbody = rowgroups[1];
-    expect(tbody.children.length).toBe(0);
+
+    const rows = screen.getAllByRole('rowgroup')[1].querySelectorAll('tr');
+    expect(rows).toHaveLength(0);
+  });
+
+  it('should update spacecraft state when selected', () => {
+    render(
+      <MemoryRouter>
+        <ResultsResponse
+          spacecrafts={mockSpacecrafts}
+          onSpacecraftSelected={mockOnSpacecraftSelected}
+        />
+      </MemoryRouter>
+    );
+
+    fireEvent.click(screen.getByText('Enterprise'));
+    expect(mockOnSpacecraftSelected).toHaveBeenCalledWith(0);
   });
 });
