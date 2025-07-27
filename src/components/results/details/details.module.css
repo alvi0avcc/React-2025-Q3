@@ -1,0 +1,5 @@
+.details {
+  display: flex;
+  width: 500px;
+  flex-direction: column;
+}

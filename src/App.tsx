@@ -1,59 +1,29 @@
-import { Component } from 'react';
 import './App.css';
-import { Wrapper } from './components/wrapper/wrapper';
-import { TopControls } from './components/top-controls/top-controls';
-import { Results } from './components/results/results';
-import type { Spacecraft } from './types/types';
-import type { ApiError } from './api/api';
+import { Wrapper } from '@/components/wrapper/wrapper';
 
 import { ErrorBoundary } from '@/components/error-boundary/error-boundary';
-import { ErrorButton } from '@/components/error-button/error-button';
+import { Route, Routes } from 'react-router';
+import HomePage from '@/pages/HomePage/HomePage';
+import About from '@/pages/About/About';
+import Page404 from '@/pages/Page404/Page404';
+import Header from '@/components/header/header';
+import { Details } from '@/components/results/details/details';
 
-type State = {
-  searchResults: Spacecraft[];
-  searchError: ApiError | null;
-  isLoading: boolean;
+const App = () => {
+  return (
+    <ErrorBoundary>
+      <Wrapper>
+        <Header />
+        <Routes>
+          <Route path="/" element={<HomePage />}>
+            <Route path="details" element={<Details />} />
+          </Route>
+          <Route path="about" element={<About />} />
+          <Route path="*" element={<Page404 />} />
+        </Routes>
+      </Wrapper>
+    </ErrorBoundary>
+  );
 };
-
-class App extends Component {
-  state: State = {
-    searchResults: [],
-    searchError: null,
-    isLoading: false,
-  };
-
-  handleSearchResults = (
-    spacecrafts: Spacecraft[],
-    error: ApiError | null,
-    isLoading: boolean
-  ) => {
-    this.setState({
-      searchResults: spacecrafts,
-      searchError: error,
-      isLoading,
-    });
-  };
-
-  render() {
-    const { searchResults, searchError, isLoading } = this.state;
-
-    return (
-      <ErrorBoundary>
-        <Wrapper>
-          <h2>Star Trek API. Class-components</h2>
-
-          <TopControls onSearchResults={this.handleSearchResults} />
-
-          <Results
-            spacecrafts={searchResults}
-            error={searchError}
-            isLoading={isLoading}
-          />
-          <ErrorButton />
-        </Wrapper>
-      </ErrorBoundary>
-    );
-  }
-}
 
 export default App;

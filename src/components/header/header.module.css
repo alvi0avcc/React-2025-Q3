@@ -1,0 +1,30 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px;
+  border-bottom: 1px solid #fff;
+}
+
+.logo {
+  height: 2rem;
+}
+
+.logo img {
+  height: 100%;
+}
+
+.logo img:hover {
+  transition: 1s;
+  transform: rotate(180deg);
+}
+
+.navAbout {
+  text-decoration: none;
+  color: #00d8ff;
+}
+
+.navAbout:hover {
+  text-decoration: underline;
+  color: #0f0;
+}

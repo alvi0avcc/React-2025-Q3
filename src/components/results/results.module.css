@@ -1,11 +1,14 @@
 .results {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   border: 1px #fff solid;
+  align-items: center;
 }
 
 .loader {
   margin: 3px;
+  border-radius: 50%;
+  width: 50px;
 }
 
 .loading {

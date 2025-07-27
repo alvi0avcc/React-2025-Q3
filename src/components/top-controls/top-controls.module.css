@@ -1,6 +1,12 @@
 .topControls {
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: column;
   justify-content: center;
   border: 1px #fff solid;
+}
+
+.search {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
 }
