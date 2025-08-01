@@ -2,7 +2,7 @@ import styles from './response.module.css';
 import type { Spacecraft } from '@/types/types';
 import { getDisplayValue } from '@/utils/valid';
 import { useState } from 'react';
-import { Outlet, useNavigate } from 'react-router';
+import { Outlet } from 'react-router';
 
 type Props = {
   spacecrafts: Spacecraft[];
@@ -14,14 +14,17 @@ export const ResultsResponse = ({
   onSpacecraftSelected,
 }: Props) => {
   const [spacecraft, setSpacecraft] = useState<Spacecraft | null>(null);
-  const navigate = useNavigate();
 
   const handleSpacecraftSelected = (id: number) => {
     if (onSpacecraftSelected) {
       setSpacecraft(spacecrafts[id]);
-      void navigate('details', { state: { spacecraft } });
       onSpacecraftSelected(id);
     }
+  };
+
+  const handleCloseDetails = () => {
+    setSpacecraft(null);
+    onSpacecraftSelected?.(0);
   };
 
   return (
@@ -45,7 +48,9 @@ export const ResultsResponse = ({
         </tbody>
       </table>
 
-      <Outlet context={{ spacecraft: spacecraft }} />
+      <Outlet
+        context={{ spacecraft: spacecraft, onClose: handleCloseDetails }}
+      />
     </div>
   );
 };

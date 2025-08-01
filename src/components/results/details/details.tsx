@@ -3,12 +3,16 @@ import styles from './details.module.css';
 import { useOutletContext, useLocation } from 'react-router';
 import { getDisplayValue } from '@/utils/valid';
 
-type ContextType = { spacecraft: Spacecraft | null };
+type ContextType = {
+  spacecraft: Spacecraft | null;
+  onClose: () => void;
+};
 
 export const Details = () => {
-  const { spacecraft } = useOutletContext<ContextType>();
+  const { spacecraft, onClose } = useOutletContext<ContextType>();
 
   const location = useLocation();
+
   const spacecraftFromState = location.state?.spacecraft;
   const ship: Spacecraft = spacecraft || spacecraftFromState;
 
@@ -16,6 +20,10 @@ export const Details = () => {
 
   return (
     <div className={styles.details}>
+      <div className={styles.close} onClick={onClose}>
+        X
+      </div>
+
       <p>Details</p>
 
       <h3>{ship.name}</h3>

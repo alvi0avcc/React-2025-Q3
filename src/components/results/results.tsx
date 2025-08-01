@@ -3,7 +3,7 @@ import { ResultsResponse } from './response/response';
 import { ResultsReject } from './reject/reject';
 import type { Spacecraft } from '@/types/types';
 import type { ApiError } from '@/api/api';
-import { Loader } from '../loader/loader';
+import { Loader } from '@/components/loader/loader';
 
 type Props = {
   spacecrafts: Spacecraft[];

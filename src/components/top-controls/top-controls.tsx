@@ -74,11 +74,11 @@ export const TopControls = ({
   useEffect(() => {
     const params = new URLSearchParams();
     params.set('page', `${pagination.pageNumber}`);
-    if (spacecraftSelectedId !== null) {
+    if (spacecraftSelectedId && spacecraftSelectedId > 0) {
       params.set('id', `${spacecraftSelectedId}`);
-      void navigate(`details?${params.toString()}`, { replace: true });
+      void navigate(`/details?${params.toString()}`, { replace: true });
     } else {
-      setSearchParams(params, { replace: true });
+      void navigate(`/?${params.toString()}`, { replace: true });
     }
   }, [pagination, setSearchParams, spacecraftSelectedId]);
 
