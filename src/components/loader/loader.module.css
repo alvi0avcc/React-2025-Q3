@@ -1,0 +1,10 @@
+.loader {
+  margin: 3px;
+  border-radius: 50%;
+  width: 50px;
+}
+
+.loading {
+  color: #fff;
+  background-color: #000;
+}

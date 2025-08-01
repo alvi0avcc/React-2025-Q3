@@ -1,17 +1,6 @@
 .results {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   border: 1px #fff solid;
   align-items: center;
-}
-
-.loader {
-  margin: 3px;
-  border-radius: 50%;
-  width: 50px;
-}
-
-.loading {
-  color: #fff;
-  background-color: #000;
 }
