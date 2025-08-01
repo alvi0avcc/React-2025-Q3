@@ -7,10 +7,11 @@ import type {
   Spacecraft,
   SpacecraftsTotalInfo,
 } from '@/types/types';
-import { localStorageGet, type ApiError } from '@/api/api';
+import { type ApiError } from '@/api/api';
 import { Pagination } from './pagination/pagination';
 import { defaultPagination } from '@/const/const';
 import { useNavigate, useSearchParams } from 'react-router';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
 
 type Props = {
   onSearchResults: (
@@ -29,7 +30,7 @@ export const TopControls = ({
   const navigate = useNavigate();
   const [totalPages, setTotalPages] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [searchQuery, setSearchQuery] = useState(localStorageGet());
+  const [searchQuery, setSearchQuery] = useLocalStorage();
 
   const initPagination: PaginationOptions = {
     pageNumber: Number.parseInt(
@@ -43,10 +44,6 @@ export const TopControls = ({
   const [pagination, setPagination] = useState(initPagination);
 
   const [triggerSearch, setTriggerSearch] = useState(false);
-
-  const handleSearchInputChange = (query: string) => {
-    setSearchQuery(query);
-  };
 
   const handleSearchRequest = () => {
     setPagination({
@@ -90,7 +87,7 @@ export const TopControls = ({
       <section className={styles.search}>
         <SearchInputField
           initialValue={searchQuery}
-          onInputChange={handleSearchInputChange}
+          onInputChange={setSearchQuery}
           onSearchRequest={handleSearchRequest}
         />
 
