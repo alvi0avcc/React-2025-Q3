@@ -54,7 +54,11 @@ export const ResultsResponse = ({
         </thead>
         <tbody>
           {spacecrafts.map((item, id) => (
-            <tr key={item.uid} onClick={() => handleSpacecraftSelected?.(id)}>
+            <tr
+              key={item.uid}
+              onClick={() => handleSpacecraftSelected?.(id)}
+              className={selectedIds.includes(item.uid) ? styles.selected : ''}
+            >
               <td>
                 <input
                   type="checkbox"

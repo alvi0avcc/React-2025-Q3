@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { Spacecraft } from '@/types/types';
 
-interface SelectedSpacecraftState {
+export interface SelectedSpacecraftState {
   selectedItems: Spacecraft[];
   selectedIds: string[];
 }
