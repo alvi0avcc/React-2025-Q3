@@ -4,6 +4,7 @@ import { ResultsReject } from './reject/reject';
 import type { Spacecraft } from '@/types/types';
 import type { ApiError } from '@/api/api';
 import { Loader } from '@/components/loader/loader';
+import { SelectedItemsPopUp } from '../selectedItemsPopUp/selectedItemsPopUp';
 
 type Props = {
   spacecrafts: Spacecraft[];
@@ -33,10 +34,13 @@ export const Results = ({
   return (
     <div className={styles.results}>
       {!error ? (
-        <ResultsResponse
-          spacecrafts={spacecrafts}
-          onSpacecraftSelected={onSpacecraftSelected}
-        />
+        <>
+          <ResultsResponse
+            spacecrafts={spacecrafts}
+            onSpacecraftSelected={onSpacecraftSelected}
+          />
+          <SelectedItemsPopUp />
+        </>
       ) : (
         <ResultsReject error={error} />
       )}

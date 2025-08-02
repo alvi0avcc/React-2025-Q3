@@ -1,0 +1,40 @@
+.popup {
+  position: fixed;
+  bottom: 5px;
+  right: 5px;
+  z-index: 1000;
+  background: #ffffffe6;
+  border-radius: 8px;
+  padding: 5px;
+  animation: slide 0.3s ease-out;
+}
+
+.popupContent {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #000;
+}
+
+.popUpButton {
+  border: 1px solid #21155b;
+  padding: 5px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.popUpButton:hover {
+  background-color: #f0f7ff;
+}
+
+@keyframes slide {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0%);
+  }
+}
