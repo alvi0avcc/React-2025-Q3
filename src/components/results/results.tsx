@@ -3,6 +3,7 @@ import { ResultsResponse } from './response/response';
 import { ResultsReject } from './reject/reject';
 import type { Spacecraft } from '@/types/types';
 import type { ApiError } from '@/api/api';
+import { Loader } from '@/components/loader/loader';
 
 type Props = {
   spacecrafts: Spacecraft[];
@@ -20,12 +21,7 @@ export const Results = ({
   if (isLoading) {
     return (
       <section className={styles.results}>
-        <img
-          className={styles.loader}
-          src="./loader.gif"
-          alt="Loading spacecrafts data"
-        />
-        <div className={styles.loading}>Loading spacecrafts data...</div>
+        <Loader />
       </section>
     );
   }
@@ -37,10 +33,12 @@ export const Results = ({
   return (
     <div className={styles.results}>
       {!error ? (
-        <ResultsResponse
-          spacecrafts={spacecrafts}
-          onSpacecraftSelected={onSpacecraftSelected}
-        />
+        <>
+          <ResultsResponse
+            spacecrafts={spacecrafts}
+            onSpacecraftSelected={onSpacecraftSelected}
+          />
+        </>
       ) : (
         <ResultsReject error={error} />
       )}

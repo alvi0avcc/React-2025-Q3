@@ -2,7 +2,6 @@ import {
   baseUrl,
   defaultPagination,
   delayBetweenRequests,
-  localStorageKey,
 } from '@/const/const';
 import type {
   PaginationOptions,
@@ -36,8 +35,6 @@ export const buildSearchParams = (
   );
   params.set('pageSize', `${options.pageSize || defaultPagination.pageSize}`);
 
-  localStorageSet(query);
-
   return params;
 };
 
@@ -65,14 +62,6 @@ const spacecraftsFetch = async (
     }
     throw error;
   }
-};
-
-export const localStorageGet = (): string => {
-  return localStorage.getItem(localStorageKey) || '';
-};
-
-const localStorageSet = (value: string): void => {
-  localStorage.setItem(localStorageKey, value);
 };
 
 export const spacecraftsGet = async (

@@ -3,20 +3,28 @@ import styles from './details.module.css';
 import { useOutletContext, useLocation } from 'react-router';
 import { getDisplayValue } from '@/utils/valid';
 
-type ContextType = { spacecraft: Spacecraft | null };
+type ContextType = {
+  spacecraft: Spacecraft | null;
+  onClose: () => void;
+};
 
 export const Details = () => {
-  const { spacecraft } = useOutletContext<ContextType>();
+  const { spacecraft, onClose } = useOutletContext<ContextType>();
 
   const location = useLocation();
+
   const spacecraftFromState = location.state?.spacecraft;
   const ship: Spacecraft = spacecraft || spacecraftFromState;
 
   if (!ship) return;
 
   return (
-    <div className={styles.details}>
-      <p>Details</p>
+    <fieldset className={styles.details}>
+      <div className={styles.close} onClick={onClose}>
+        ⛒
+      </div>
+
+      <legend>Details</legend>
 
       <h3>{ship.name}</h3>
       <p>uid: {ship.uid}</p>
@@ -28,6 +36,6 @@ export const Details = () => {
       <p>operator: {getDisplayValue(ship.operator?.name)}</p>
       <p>affiliation: {getDisplayValue(ship.affiliation?.name)}</p>
       <p>Class: {getDisplayValue(ship.spacecraftClass?.name)}</p>
-    </div>
+    </fieldset>
   );
 };

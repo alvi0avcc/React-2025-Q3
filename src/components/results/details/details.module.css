@@ -1,5 +1,17 @@
 .details {
   display: flex;
+  position: relative;
   width: 500px;
   flex-direction: column;
+}
+
+.close {
+  position: absolute;
+  right: 5px;
+  transform: translateY(-50%);
+}
+
+.close:hover {
+  cursor: pointer;
+  color: #f00;
 }

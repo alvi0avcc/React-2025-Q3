@@ -1,7 +1,7 @@
 import { vi } from 'vitest';
 import { spacecraftsGet, buildSearchParams } from '@/api/api';
 import { ApiError } from '@/api/api';
-import { defaultPagination, localStorageKey } from '@/const/const';
+import { defaultPagination } from '@/const/const';
 
 describe('spacecraftsGet', () => {
   beforeEach(() => {
@@ -55,7 +55,6 @@ describe('spacecraftsGet', () => {
     expect(result).toEqual({
       spacecraft: mockResponse.spacecrafts,
     });
-    expect(localStorage.getItem(localStorageKey)).toBe('Enterprise');
     expect(fetch).toHaveBeenCalledWith(
       expect.stringContaining('https://stapi.co/api/v2/rest/spacecraft/search'),
       expect.any(Object)

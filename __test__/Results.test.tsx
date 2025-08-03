@@ -1,7 +1,24 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
+import { Provider } from 'react-redux';
+import { configureStore } from '@reduxjs/toolkit';
 import { Results } from '@/components/results/results';
 import type { Spacecraft } from '@/types/types';
+import selectedSpacecraftReducer from '@/store/slice/selectedSpacecraftSlice';
+
+const mockStore = configureStore({
+  reducer: {
+    selectedSpacecraft: selectedSpacecraftReducer,
+  },
+});
+
+const renderWithProviders = (ui: React.ReactElement) => {
+  return render(
+    <Provider store={mockStore}>
+      <MemoryRouter>{ui}</MemoryRouter>
+    </Provider>
+  );
+};
 
 const mockSpacecrafts: Spacecraft[] = [
   { uid: '1', name: 'Enterprise' },
@@ -10,42 +27,34 @@ const mockSpacecrafts: Spacecraft[] = [
 
 describe('Results', () => {
   it('should show loader when isLoading is true', () => {
-    render(
-      <MemoryRouter>
-        <Results spacecrafts={[]} error={null} isLoading={true} />
-      </MemoryRouter>
+    renderWithProviders(
+      <Results spacecrafts={[]} error={null} isLoading={true} />
     );
     expect(screen.getByText(/loading/i)).toBeInTheDocument();
   });
 
   it('should show error when error exists', () => {
-    render(
-      <MemoryRouter>
-        <Results
-          spacecrafts={[]}
-          error={{ name: 'ApiError', message: 'Error API' }}
-          isLoading={false}
-        />
-      </MemoryRouter>
+    renderWithProviders(
+      <Results
+        spacecrafts={[]}
+        error={{ name: 'ApiError', message: 'Error API' }}
+        isLoading={false}
+      />
     );
     expect(screen.getByText(/Error Loading Data/i)).toBeInTheDocument();
   });
 
   it('should display list of results when data is available', () => {
-    render(
-      <MemoryRouter>
-        <Results spacecrafts={mockSpacecrafts} error={null} isLoading={false} />
-      </MemoryRouter>
+    renderWithProviders(
+      <Results spacecrafts={mockSpacecrafts} error={null} isLoading={false} />
     );
     expect(screen.getByText(/enterprise/i)).toBeInTheDocument();
     expect(screen.getByText(/voyager/i)).toBeInTheDocument();
   });
 
   it('should show empty state when no results found', () => {
-    render(
-      <MemoryRouter>
-        <Results spacecrafts={[]} error={null} isLoading={false} />
-      </MemoryRouter>
+    renderWithProviders(
+      <Results spacecrafts={[]} error={null} isLoading={false} />
     );
     expect(screen.getByText(/no spacecrafts found/i)).toBeInTheDocument();
   });

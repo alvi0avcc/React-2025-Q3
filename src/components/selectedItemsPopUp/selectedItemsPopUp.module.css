@@ -1,0 +1,29 @@
+.popup {
+  position: fixed;
+  bottom: 5px;
+  right: 5px;
+  z-index: 1000;
+  background: var(--popup-background);
+  border-radius: 8px;
+  padding: 5px;
+  animation: slide 0.3s ease-out;
+}
+
+.popupContent {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--text);
+}
+
+@keyframes slide {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0%);
+  }
+}
