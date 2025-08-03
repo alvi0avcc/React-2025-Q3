@@ -29,10 +29,7 @@ export const ResultsResponse = ({
     }
   };
 
-  const handleToggleSelect = (item: Spacecraft, e: React.MouseEvent) => {
-    console.log(item);
-
-    e.stopPropagation();
+  const handleToggleSelect = (item: Spacecraft) => {
     dispatch(toggleSpacecraft(item));
   };
 
@@ -46,7 +43,7 @@ export const ResultsResponse = ({
       <table className={styles.table}>
         <thead>
           <tr>
-            <th>Select</th>
+            <th className={styles.colSelect}>Select</th>
             <th>Name</th>
             <th>Class</th>
             <th>Status</th>
@@ -63,7 +60,8 @@ export const ResultsResponse = ({
                 <input
                   type="checkbox"
                   checked={selectedIds.includes(item.uid)}
-                  onClick={e => handleToggleSelect(item, e)}
+                  onClick={e => e.stopPropagation()}
+                  onChange={() => handleToggleSelect(item)}
                 />
               </td>
               <td>{getDisplayValue(item.name)}</td>

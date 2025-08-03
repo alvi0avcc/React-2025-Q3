@@ -3,6 +3,7 @@ import type { RootState } from '@/store/store';
 import { clearSelected } from '@/store/slice/selectedSpacecraftSlice';
 import styles from './SelectedItemsPopUp.module.css';
 import { useRef } from 'react';
+import { getDisplayValue } from '@/utils/valid';
 
 export const SelectedItemsPopUp = () => {
   const dispatch = useDispatch();
@@ -23,10 +24,10 @@ export const SelectedItemsPopUp = () => {
       [
         `"${item.uid}"`,
         `"${item.name}"`,
-        `"${item.spacecraftClass?.name || ''}"`,
-        `"${item.status || ''}"`,
-        `"${item.registry || ''}"`,
-        `"${item.species || ''}"`,
+        getDisplayValue(item.spacecraftClass?.name),
+        getDisplayValue(item.status),
+        getDisplayValue(item.registry),
+        getDisplayValue(item.species),
       ].join(',')
     );
 

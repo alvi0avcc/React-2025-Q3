@@ -8,6 +8,7 @@
 .close {
   position: absolute;
   right: 5px;
+  transform: translateY(-50%);
 }
 
 .close:hover {

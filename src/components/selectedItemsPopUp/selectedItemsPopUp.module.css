@@ -3,7 +3,7 @@
   bottom: 5px;
   right: 5px;
   z-index: 1000;
-  background: #ffffffe6;
+  background: var(--popup-background);
   border-radius: 8px;
   padding: 5px;
   animation: slide 0.3s ease-out;
@@ -13,18 +13,7 @@
   display: flex;
   align-items: center;
   gap: 5px;
-  color: #000;
-}
-
-.popUpButton {
-  border: 1px solid #21155b;
-  padding: 5px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.popUpButton:hover {
-  background-color: #f0f7ff;
+  color: var(--text);
 }
 
 @keyframes slide {

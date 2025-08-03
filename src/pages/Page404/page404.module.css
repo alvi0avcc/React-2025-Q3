@@ -1,6 +1,6 @@
 .main404 {
   height: 100%;
-  background-image: url('./404.jpg');
+  background-image: var(--url-404);
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;

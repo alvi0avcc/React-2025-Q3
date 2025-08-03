@@ -19,12 +19,12 @@ export const Details = () => {
   if (!ship) return;
 
   return (
-    <div className={styles.details}>
+    <fieldset className={styles.details}>
       <div className={styles.close} onClick={onClose}>
-        X
+        ⛒
       </div>
 
-      <p>Details</p>
+      <legend>Details</legend>
 
       <h3>{ship.name}</h3>
       <p>uid: {ship.uid}</p>
@@ -36,6 +36,6 @@ export const Details = () => {
       <p>operator: {getDisplayValue(ship.operator?.name)}</p>
       <p>affiliation: {getDisplayValue(ship.affiliation?.name)}</p>
       <p>Class: {getDisplayValue(ship.spacecraftClass?.name)}</p>
-    </div>
+    </fieldset>
   );
 };

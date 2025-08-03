@@ -21,7 +21,7 @@ const HomePage = () => {
 
   const handleSearchResults = (
     spacecrafts: Spacecraft[],
-    info: SpacecraftsTotalInfo | undefined,
+    _info: SpacecraftsTotalInfo | undefined,
     error: ApiError | null,
     isLoading: boolean
   ) => {
