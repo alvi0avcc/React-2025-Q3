@@ -2,6 +2,9 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { vi } from 'vitest';
+import { Provider } from 'react-redux';
+import { configureStore } from '@reduxjs/toolkit';
+import selectedSpacecraftReducer from '@/store/slice/selectedSpacecraftSlice';
 
 type Spacecraft = { uid: string; name: string };
 type ApiError = { message: string };
@@ -12,6 +15,10 @@ type TopControlsProps = {
     isLoading: boolean
   ) => void;
 };
+
+vi.mock('@/components/selectedItemsPopUp/selectedItemsPopUp', () => ({
+  SelectedItemsPopUp: () => <div data-testid="selected-items-popup" />,
+}));
 
 vi.mock('@/components/top-controls/top-controls', () => ({
   TopControls: ({ onSearchResults }: TopControlsProps) => (
@@ -26,6 +33,7 @@ vi.mock('@/components/top-controls/top-controls', () => ({
     </div>
   ),
 }));
+
 vi.mock('@/components/error-boundary/error-boundary', () => ({
   ErrorBoundary: ({ children }: { children: React.ReactNode }) => (
     <>{children}</>
@@ -51,19 +59,38 @@ vi.mock('@/components/results/results', () => ({
 import HomePage from '@/pages/HomePage/HomePage';
 
 describe('HomePage', () => {
+  const createStore = () => {
+    return configureStore({
+      reducer: {
+        selectedSpacecraft: selectedSpacecraftReducer,
+      },
+    });
+  };
+
   beforeEach(() => {
     mockResultsProps.length = 0;
   });
 
   it('render', () => {
-    render(<HomePage />);
+    render(
+      <Provider store={createStore()}>
+        <HomePage />
+      </Provider>
+    );
+
     expect(screen.getByText(/Star Trek API/i)).toBeInTheDocument();
     expect(screen.getByTestId('top-controls')).toBeInTheDocument();
     expect(screen.getByTestId('results')).toBeInTheDocument();
+    expect(screen.getByTestId('selected-items-popup')).toBeInTheDocument();
   });
 
   it('search results', async () => {
-    render(<HomePage />);
+    render(
+      <Provider store={createStore()}>
+        <HomePage />
+      </Provider>
+    );
+
     await userEvent.click(screen.getByText('Search'));
     const { spacecrafts = undefined } = mockResultsProps.at(-1) || {};
     expect(spacecrafts).toEqual([{ uid: '1', name: 'Enterprise' }]);

@@ -3,6 +3,7 @@ import { TopControls } from '@/components/top-controls/top-controls';
 import { Results } from '@/components/results/results';
 import type { Spacecraft, SpacecraftsTotalInfo } from '@/types/types';
 import type { ApiError } from '@/api/api';
+import { SelectedItemsPopUp } from '@/components/selectedItemsPopUp/selectedItemsPopUp';
 
 type State = {
   searchResults: Spacecraft[];
@@ -53,6 +54,8 @@ const HomePage = () => {
         isLoading={isLoading}
         onSpacecraftSelected={onSpacecraftSelected}
       />
+
+      <SelectedItemsPopUp />
     </>
   );
 };
