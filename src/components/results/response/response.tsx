@@ -35,7 +35,7 @@ export const ResultsResponse = ({
 
   const handleCloseDetails = () => {
     setSpacecraft(null);
-    onSpacecraftSelected?.(0);
+    onSpacecraftSelected?.(-1);
   };
 
   return (
