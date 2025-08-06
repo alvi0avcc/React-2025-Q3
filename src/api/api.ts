@@ -44,8 +44,12 @@ const spacecraftsFetch = async (
   await pause(delayBetweenRequests);
 
   try {
-    const response: Response = await fetch(`${baseUrl}?${params.toString()}`, {
+    const response: Response = await fetch(baseUrl, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: params,
     });
 
     if (!response.ok) {

@@ -60,7 +60,7 @@ export const SelectedItemsPopUp = () => {
         </button>
 
         <button onClick={handleSave} className={styles.popUpButton}>
-          Save Selected
+          Download
         </button>
         <a ref={saveLink} style={{ display: 'none' }}></a>
       </div>
