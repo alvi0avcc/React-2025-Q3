@@ -7,3 +7,5 @@ export const defaultPagination: PaginationOptions = {
   pageSize: 25,
 } as const;
 export const delayBetweenRequests = 50; //ms
+
+export const keepUnusedDataFor = 60; //sec

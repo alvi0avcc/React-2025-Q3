@@ -26,7 +26,15 @@ export const Results = ({
     );
   }
 
-  if (!error && spacecrafts.length === 0) {
+  if (error) {
+    return (
+      <div className={styles.results}>
+        <ResultsReject error={error} />
+      </div>
+    );
+  }
+
+  if (spacecrafts.length === 0) {
     return <div className={styles.empty}>No spacecrafts found</div>;
   }
 

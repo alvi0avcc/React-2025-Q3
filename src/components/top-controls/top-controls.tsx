@@ -12,8 +12,14 @@ import { Pagination } from './pagination/pagination';
 import { defaultPagination } from '@/const/const';
 import { useNavigate, useSearchParams } from 'react-router';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
-import { useGetSpacecraftsQuery } from '@/store/slice/apiSlice';
+import {
+  apiSlice,
+  useGetSpacecraftsQuery,
+  useLazyGetSpacecraftsQuery,
+  useRefreshSpacecraftsMutation,
+} from '@/store/slice/apiSlice';
 import { isApiError } from '@/utils/valid';
+import { useDispatch } from 'react-redux';
 
 type Props = {
   onSearchResults: (
@@ -34,6 +40,9 @@ export const TopControls = ({
   const [searchParams, setSearchParams] = useSearchParams();
   const [storedSearchQuery, setStoredSearchQuery] = useLocalStorage();
   const searchQueryRef = useRef(storedSearchQuery);
+  const [dataSource, setDataSource] = useState<boolean | null>(null);
+
+  const dispatch = useDispatch();
 
   const initPagination: PaginationOptions = {
     pageNumber: Number.parseInt(
@@ -46,10 +55,15 @@ export const TopControls = ({
 
   const [pagination, setPagination] = useState(initPagination);
 
-  const { data, error, isFetching } = useGetSpacecraftsQuery({
+  const { data, error, isFetching, refetch } = useGetSpacecraftsQuery({
     searchQuery: searchQueryRef.current,
     options: pagination,
   });
+
+  const [triggerSearch, { isFetching: isLazyFetching }] =
+    useLazyGetSpacecraftsQuery();
+
+  const [refreshSpacecrafts] = useRefreshSpacecraftsMutation();
 
   const handleSearchRequest = () => {
     setPagination({
@@ -68,12 +82,44 @@ export const TopControls = ({
     setPagination(newPagination);
   };
 
+  const handleManualRefresh = async () => {
+    try {
+      await refreshSpacecrafts();
+      void refetch();
+      setDataSource(true);
+    } catch (error_) {
+      console.error('Refresh failed:', error_);
+    }
+  };
+
+  const handleFullReset = async () => {
+    try {
+      dispatch(apiSlice.util.resetApiState());
+      setPagination(defaultPagination);
+      searchQueryRef.current = '';
+      setStoredSearchQuery('');
+      void navigate('/', { replace: true });
+
+      await triggerSearch({
+        searchQuery: '',
+        options: defaultPagination,
+      });
+    } catch (error_) {
+      console.error('Cache reset failed:', error_);
+    }
+  };
+
   const handleSearch = () => {
+    const isLoading = isFetching || isLazyFetching;
+    console.log(error);
+    console.log(error && isApiError(error) ? error : null);
+    console.log(isApiError(error));
+
     onSearchResults(
       data?.spacecraft || [],
       data?.info,
       error && isApiError(error) ? error : null,
-      isFetching
+      isLoading
     );
 
     if (!error && data?.info) {
@@ -82,6 +128,8 @@ export const TopControls = ({
   };
 
   useEffect(() => {
+    setDataSource(isFetching);
+
     const params = new URLSearchParams();
     params.set('page', `${pagination.pageNumber}`);
     if (
@@ -98,7 +146,7 @@ export const TopControls = ({
 
   useEffect(() => {
     handleSearch();
-  }, [data, error, isFetching]);
+  }, [data, error, isFetching, isLazyFetching]);
 
   return (
     <div className={styles.topControls}>
@@ -108,9 +156,30 @@ export const TopControls = ({
           onInputChange={handleInputChange}
           onSearchRequest={handleSearchRequest}
         />
-
-        <SearchButton isFetching={isFetching} onSearch={handleSearch} />
+        <SearchButton
+          isFetching={isFetching || isLazyFetching}
+          onSearch={handleSearchRequest}
+        />
       </section>
+
+      <fieldset className={styles.refresh}>
+        <legend>{dataSource ? 'Fresh data' : 'Cached data'}</legend>
+        <button
+          onClick={handleManualRefresh}
+          disabled={isFetching || isLazyFetching}
+          className={styles.refreshButton}
+        >
+          Refresh Current Page
+        </button>
+
+        <button
+          onClick={handleFullReset}
+          disabled={isFetching || isLazyFetching}
+          className={styles.resetButton}
+        >
+          Reset All Cache
+        </button>
+      </fieldset>
 
       <Pagination
         pagination={pagination}

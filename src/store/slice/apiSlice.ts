@@ -4,16 +4,17 @@ import type {
   Spacecraft,
   SpacecraftsTotalInfo,
 } from '@/types/types';
-import { baseUrl, defaultPagination } from '@/const/const';
+import { baseUrl, defaultPagination, keepUnusedDataFor } from '@/const/const';
 import { isValidSpacecrafts, isSpacecraftsTotalInfo } from '@/utils/valid';
 
 export const apiSlice = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({ baseUrl }),
+  tagTypes: ['Spacecrafts'],
   endpoints: builder => ({
     getSpacecrafts: builder.query<
       { spacecraft: Spacecraft[]; info?: SpacecraftsTotalInfo },
-      { searchQuery: string; options?: PaginationOptions }
+      { searchQuery: string; options?: PaginationOptions; refresh?: boolean }
     >({
       query: ({ searchQuery, options = defaultPagination }) => ({
         url: '',
@@ -27,6 +28,16 @@ export const apiSlice = createApi({
           pageSize: `${options.pageSize || defaultPagination.pageSize}`,
         }),
       }),
+      providesTags: result =>
+        result
+          ? [
+              ...result.spacecraft.map(({ uid }) => ({
+                type: 'Spacecrafts' as const,
+                uid,
+              })),
+              { type: 'Spacecrafts', uid: 'LIST' },
+            ]
+          : [{ type: 'Spacecrafts', uid: 'LIST' }],
       transformResponse: (response: unknown) => {
         if (typeof response !== 'object' || response === null) {
           throw new Error('Invalid response format: expected an object');
@@ -60,8 +71,17 @@ export const apiSlice = createApi({
           info,
         };
       },
+      keepUnusedDataFor: keepUnusedDataFor,
+    }),
+    refreshSpacecrafts: builder.mutation<null, void>({
+      queryFn: () => ({ data: null }),
+      invalidatesTags: [{ type: 'Spacecrafts', id: 'LIST' }],
     }),
   }),
 });
 
-export const { useGetSpacecraftsQuery } = apiSlice;
+export const {
+  useGetSpacecraftsQuery,
+  useLazyGetSpacecraftsQuery,
+  useRefreshSpacecraftsMutation,
+} = apiSlice;
