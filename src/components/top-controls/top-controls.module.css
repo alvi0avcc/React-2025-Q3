@@ -10,3 +10,12 @@
   flex-flow: row wrap;
   justify-content: center;
 }
+
+.refresh {
+  width: fit-content;
+  margin: auto;
+}
+
+.refresh button {
+  background-color: #f00;
+}

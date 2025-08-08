@@ -6,6 +6,8 @@ type Props = {
   error: ApiError;
 };
 export const ResultsReject = ({ error }: Props) => {
+  console.log('ResultsReject =', error);
+
   const errorHint = () => {
     if (!isApiError(error)) return null;
 
@@ -13,16 +15,16 @@ export const ResultsReject = ({ error }: Props) => {
       case 404: {
         return (
           <p className={styles.hint}>
-            The requested resource was not found. Please check your search
-            query.
+            Error-404. The requested resource was not found. Please check your
+            search query.
           </p>
         );
       }
       case 405: {
         return (
           <p className={styles.hint}>
-            Method Not Allowed: This endpoint does not accept the request method
-            used.
+            Error-405. Method Not Allowed: This endpoint does not accept the
+            request method used.
           </p>
         );
       }
@@ -30,11 +32,12 @@ export const ResultsReject = ({ error }: Props) => {
         if ((error.status ?? 0) >= 500) {
           return (
             <p className={styles.hint}>
-              Our servers are having issues. Please try again later.
+              Error-5xx. Our servers are having issues. Please try again later.
             </p>
           );
         }
-        return null;
+
+        return <p className={styles.hint}>{error.status}</p>;
       }
     }
   };

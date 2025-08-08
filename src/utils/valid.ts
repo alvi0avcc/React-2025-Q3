@@ -1,4 +1,4 @@
-import type { ApiError } from '@/api/api';
+import { ApiError } from '@/api/api';
 import type { Spacecraft, SpacecraftsTotalInfo } from '@/types/types';
 
 const isValidSpacecraft = (spacecraft: unknown): spacecraft is Spacecraft => {
@@ -60,8 +60,16 @@ export const isValidSpacecrafts = (data: unknown[]): Spacecraft[] => {
   return data.filter(item => isValidSpacecraft(item));
 };
 
-export const isApiError = (error: Error): error is ApiError => {
-  return 'status' in error;
+export const isApiError = (error: unknown): error is ApiError => {
+  if (error instanceof ApiError) return true;
+
+  if (typeof error === 'object' && error !== null) {
+    const hasStatus = 'status' in error;
+
+    return hasStatus && ('error' in error || 'data' in error);
+  }
+
+  return false;
 };
 
 export function isSpacecraftsTotalInfo(

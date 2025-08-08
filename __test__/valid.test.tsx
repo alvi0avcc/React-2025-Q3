@@ -1,4 +1,5 @@
 import { isValidSpacecrafts, isApiError } from '@/utils/valid';
+import { ApiError } from '@/api/api';
 
 describe('isValidSpacecrafts', () => {
   it('returns an array of Spacecraft if the data is valid', () => {
@@ -13,22 +14,24 @@ describe('isValidSpacecrafts', () => {
     expect(isValidSpacecrafts(data)).toEqual(data);
   });
 
-  it('not valid data', () => {
+  it('filters out invalid spacecraft data', () => {
     const data = [
       { uid: '1', name: 'Enterprise' },
       { name: 'Voyager' },
       { uid: '2' },
       null,
       'not an object',
+      123,
       { uid: 123, name: 'Defiant' },
       { uid: '3', name: 456 },
+      { uid: '4', name: 'Valid', owner: 'invalid' },
     ];
     expect(isValidSpacecrafts(data)).toEqual([
       { uid: '1', name: 'Enterprise' },
     ]);
   });
 
-  it('owner, operator, affiliation', () => {
+  it('handles nested objects (owner, operator, affiliation)', () => {
     const data = [
       {
         uid: '1',
@@ -40,25 +43,76 @@ describe('isValidSpacecrafts', () => {
     ];
     expect(isValidSpacecrafts(data)).toEqual(data);
   });
-});
 
-class MyApiError extends Error {
-  public status?: number;
-  constructor(message: string, status?: number) {
-    super(message);
-    this.name = 'ApiError';
-    this.status = status;
-  }
-}
-
-describe('isApiError', () => {
-  it('recognizes ApiError only if there is a status field', () => {
-    expect(isApiError(new MyApiError('fail', 500))).toBe(true);
-    expect(isApiError(new Error('fail'))).toBe(false);
+  it('handles optional fields being null or missing', () => {
+    const data = [
+      {
+        uid: '1',
+        name: 'Enterprise',
+        registry: null,
+        status: null,
+        dateStatus: null,
+        species: null,
+        owner: null,
+        operator: null,
+        affiliation: null,
+        spacecraftClass: null,
+      },
+    ];
+    expect(isValidSpacecrafts(data)).toEqual(data);
   });
 
-  it('returns false or throws an error for invalid objects', () => {
-    expect(isApiError(new Error('Unknown error'))).toBe(false);
-    expect(isApiError(new Error('fail'))).toBe(false);
+  it('handles invalid nested objects', () => {
+    const data = [
+      {
+        uid: '1',
+        name: 'Enterprise',
+        owner: { name: 'Starfleet' },
+      },
+      {
+        uid: '2',
+        name: 'Voyager',
+        operator: { uid: 123, name: 'Starfleet' },
+      },
+      {
+        uid: '3',
+        name: 'Defiant',
+        affiliation: { uid: 'a1' },
+      },
+    ];
+    expect(isValidSpacecrafts(data)).toEqual([]);
+  });
+});
+
+describe('isApiError', () => {
+  it('returns true for ApiError instances', () => {
+    const apiError1 = new ApiError('Not found');
+    const apiError2 = new ApiError('Server error', 500);
+
+    expect(isApiError(apiError1)).toBe(true);
+    expect(isApiError(apiError2)).toBe(true);
+  });
+
+  it('returns false for non-matching objects', () => {
+    expect(isApiError({ status: 500 })).toBe(false);
+    expect(isApiError({ message: 'Error' })).toBe(false);
+
+    expect(
+      isApiError({
+        message: 123,
+        status: '500',
+        name: 'ApiError',
+      })
+    ).toBe(false);
+
+    expect(isApiError(new Error('Generic error'))).toBe(false);
+  });
+
+  it('returns false for non-object values', () => {
+    expect(isApiError('error')).toBe(false);
+    expect(isApiError(500)).toBe(false);
+    expect(isApiError(null)).toBe(false);
+    expect(isApiError(undefined)).toBe(false);
+    expect(isApiError(true)).toBe(false);
   });
 });

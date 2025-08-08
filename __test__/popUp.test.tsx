@@ -75,6 +75,6 @@ describe('SelectedItemsPopUp Component', () => {
       screen.getByText(`${mockItems.length} items selected`)
     ).toBeInTheDocument();
     expect(screen.getByText('Unselect all')).toBeInTheDocument();
-    expect(screen.getByText('Save Selected')).toBeInTheDocument();
+    expect(screen.getByText('Download')).toBeInTheDocument();
   });
 });

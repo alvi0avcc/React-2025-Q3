@@ -12,7 +12,7 @@ const Header = () => {
   return (
     <header className={styles.header}>
       <NavLink className={styles.logo} to="/" end>
-        <img src={LogoIcon} alt="Logo" />
+        <img src={LogoIcon} alt="Logo" key="logo" />
       </NavLink>
       <div>
         <NavLink className={styles.navAbout} to="/about" end>
