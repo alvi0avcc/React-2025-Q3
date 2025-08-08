@@ -13,7 +13,7 @@ describe('isValidSpacecrafts', () => {
     expect(isValidSpacecrafts(data)).toEqual(data);
   });
 
-  it('not valid data', () => {
+  it('filters out invalid spacecraft data', () => {
     const data = [
       { uid: '1', name: 'Enterprise' },
       { name: 'Voyager' },
@@ -28,7 +28,7 @@ describe('isValidSpacecrafts', () => {
     ]);
   });
 
-  it('owner, operator, affiliation', () => {
+  it('handles nested objects (owner, operator, affiliation)', () => {
     const data = [
       {
         uid: '1',
@@ -40,25 +40,37 @@ describe('isValidSpacecrafts', () => {
     ];
     expect(isValidSpacecrafts(data)).toEqual(data);
   });
+
+  it('handles optional fields being null or missing', () => {
+    const data = [
+      {
+        uid: '1',
+        name: 'Enterprise',
+        registry: null,
+        status: null,
+        dateStatus: null,
+        species: null,
+        owner: null,
+        operator: null,
+        affiliation: null,
+        spacecraftClass: null,
+      },
+    ];
+    expect(isValidSpacecrafts(data)).toEqual(data);
+  });
 });
 
-class MyApiError extends Error {
-  public status?: number;
-  constructor(message: string, status?: number) {
-    super(message);
-    this.name = 'ApiError';
-    this.status = status;
-  }
-}
-
 describe('isApiError', () => {
-  it('recognizes ApiError only if there is a status field', () => {
-    expect(isApiError(new MyApiError('fail', 500))).toBe(true);
-    expect(isApiError(new Error('fail'))).toBe(false);
+  it('returns true for Error instances', () => {
+    expect(isApiError(new Error('fail'))).toBe(true);
+    expect(isApiError(new Error('Unknown error'))).toBe(true);
   });
 
-  it('returns false or throws an error for invalid objects', () => {
-    expect(isApiError(new Error('Unknown error'))).toBe(false);
-    expect(isApiError(new Error('fail'))).toBe(false);
+  it('returns false for non-Error values', () => {
+    expect(isApiError('error')).toBe(false);
+    expect(isApiError(500)).toBe(false);
+    expect(isApiError(null)).toBe(false);
+    expect(isApiError(undefined)).toBe(false);
+    expect(isApiError({})).toBe(false);
   });
 });

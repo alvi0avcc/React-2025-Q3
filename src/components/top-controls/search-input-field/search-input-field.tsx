@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './search-input-field.module.css';
 
 type Props = {
@@ -12,7 +12,9 @@ export const SearchInputField = ({
   onInputChange,
   onSearchRequest,
 }: Props) => {
+  const [searchValue, SetSearchValue] = useState(initialValue);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    SetSearchValue(e.target.value);
     onInputChange(e.target.value);
   };
 
@@ -25,7 +27,7 @@ export const SearchInputField = ({
   return (
     <input
       className={styles.searchInputField}
-      value={initialValue || ''}
+      value={searchValue}
       onChange={handleChange}
       onKeyUp={handleKeyUp}
       placeholder="Enter the ship name..."

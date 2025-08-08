@@ -60,8 +60,8 @@ export const isValidSpacecrafts = (data: unknown[]): Spacecraft[] => {
   return data.filter(item => isValidSpacecraft(item));
 };
 
-export const isApiError = (error: Error): error is ApiError => {
-  return 'status' in error;
+export const isApiError = (error: unknown): error is ApiError => {
+  return error instanceof Error;
 };
 
 export function isSpacecraftsTotalInfo(

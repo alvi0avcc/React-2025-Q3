@@ -1,10 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit';
 import selectedSpacecraftReducer from './slice/selectedSpacecraftSlice';
+import { apiSlice } from './slice/apiSlice';
 
 export const store = configureStore({
   reducer: {
+    [apiSlice.reducerPath]: apiSlice.reducer,
     selectedSpacecraft: selectedSpacecraftReducer,
   },
+  middleware: getDefaultMiddleware =>
+    getDefaultMiddleware().concat(apiSlice.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styles from './top-controls.module.css';
 import { SearchInputField } from './search-input-field/search-input-field';
 import { SearchButton } from './search-button/search-button';
@@ -12,6 +12,8 @@ import { Pagination } from './pagination/pagination';
 import { defaultPagination } from '@/const/const';
 import { useNavigate, useSearchParams } from 'react-router';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { useGetSpacecraftsQuery } from '@/store/slice/apiSlice';
+import { isApiError } from '@/utils/valid';
 
 type Props = {
   onSearchResults: (
@@ -30,7 +32,8 @@ export const TopControls = ({
   const navigate = useNavigate();
   const [totalPages, setTotalPages] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [searchQuery, setSearchQuery] = useLocalStorage();
+  const [storedSearchQuery, setStoredSearchQuery] = useLocalStorage();
+  const searchQueryRef = useRef(storedSearchQuery);
 
   const initPagination: PaginationOptions = {
     pageNumber: Number.parseInt(
@@ -43,32 +46,39 @@ export const TopControls = ({
 
   const [pagination, setPagination] = useState(initPagination);
 
-  const [triggerSearch, setTriggerSearch] = useState(false);
+  const { data, error, isFetching } = useGetSpacecraftsQuery({
+    searchQuery: searchQueryRef.current,
+    options: pagination,
+  });
 
   const handleSearchRequest = () => {
     setPagination({
       pageNumber: defaultPagination.pageNumber,
       pageSize: pagination.pageSize,
     });
-    setTriggerSearch(prev => !prev);
+    setStoredSearchQuery(searchQueryRef.current);
+    handleSearch();
   };
 
-  const handleSearchResults = (
-    spacecrafts: Spacecraft[],
-    info: SpacecraftsTotalInfo | undefined,
-    error: ApiError | null,
-    isLoading: boolean
-  ) => {
-    onSearchResults(spacecrafts, info, error, isLoading);
-
-    if (!error && info) {
-      setTotalPages(info.totalPages);
-    }
+  const handleInputChange = (value: string) => {
+    searchQueryRef.current = value;
   };
 
   const onPaginationChange = (newPagination: PaginationOptions) => {
     setPagination(newPagination);
-    setTriggerSearch(prev => !prev);
+  };
+
+  const handleSearch = () => {
+    onSearchResults(
+      data?.spacecraft || [],
+      data?.info,
+      error && isApiError(error) ? error : null,
+      isFetching
+    );
+
+    if (!error && data?.info) {
+      setTotalPages(data?.info.totalPages);
+    }
   };
 
   useEffect(() => {
@@ -86,21 +96,20 @@ export const TopControls = ({
     }
   }, [pagination, setSearchParams, spacecraftSelectedId]);
 
+  useEffect(() => {
+    handleSearch();
+  }, [data, error, isFetching]);
+
   return (
     <div className={styles.topControls}>
       <section className={styles.search}>
         <SearchInputField
-          initialValue={searchQuery}
-          onInputChange={setSearchQuery}
+          initialValue={searchQueryRef.current}
+          onInputChange={handleInputChange}
           onSearchRequest={handleSearchRequest}
         />
 
-        <SearchButton
-          searchQuery={searchQuery}
-          pagination={pagination}
-          onSearch={handleSearchResults}
-          triggerSearch={triggerSearch}
-        />
+        <SearchButton isFetching={isFetching} onSearch={handleSearch} />
       </section>
 
       <Pagination

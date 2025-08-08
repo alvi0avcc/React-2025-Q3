@@ -23,6 +23,7 @@ body {
   --table-row-selected: #a9a9a9;
   --popup-background: #6c6c6ce6;
   --url-404: url('./404-dark.jpg');
+  --background-disabled: #353131;
 }
 
 .light {
@@ -33,6 +34,7 @@ body {
   --table-row-selected: #c7eb63;
   --popup-background: #cecdcde6;
   --url-404: url('./404-light.jpg');
+  --background-disabled: #5a5a5a;
 }
 
 button {
