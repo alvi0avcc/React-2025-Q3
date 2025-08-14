@@ -3,9 +3,13 @@ import type {
   PaginationOptions,
   Spacecraft,
   SpacecraftsTotalInfo,
-} from '@/types/types';
-import { baseUrl, defaultPagination, keepUnusedDataFor } from '@/const/const';
-import { isValidSpacecrafts, isSpacecraftsTotalInfo } from '@/utils/valid';
+} from '@src/types/types';
+import {
+  baseUrl,
+  defaultPagination,
+  keepUnusedDataFor,
+} from '@src/const/const';
+import { isValidSpacecrafts, isSpacecraftsTotalInfo } from '@src/utils/valid';
 
 export const apiSlice = createApi({
   reducerPath: 'api',

@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import type { Spacecraft } from '@/types/types';
+import type { Spacecraft } from '@src/types/types';
 
 export interface SelectedSpacecraftState {
   selectedItems: Spacecraft[];

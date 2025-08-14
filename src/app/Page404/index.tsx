@@ -1,12 +1,12 @@
+import Link from 'next/link';
 import styles from './page404.module.css';
-import { NavLink } from 'react-router';
 
 const Page404 = () => {
   return (
     <main className={styles.main404}>
-      <NavLink className={styles.goHome} to="/" end>
+      <Link className={styles.goHome} href="/">
         Back to Home Page
-      </NavLink>
+      </Link>
     </main>
   );
 };

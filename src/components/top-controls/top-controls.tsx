@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useRef, useState } from 'react';
 import styles from './top-controls.module.css';
 import { SearchInputField } from './search-input-field/search-input-field';
@@ -6,20 +8,21 @@ import type {
   PaginationOptions,
   Spacecraft,
   SpacecraftsTotalInfo,
-} from '@/types/types';
-import { type ApiError } from '@/api/api';
+} from '@src/types/types';
+import { type ApiError } from '@src/api/api';
 import { Pagination } from './pagination/pagination';
-import { defaultPagination } from '@/const/const';
-import { useNavigate, useSearchParams } from 'react-router';
-import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { defaultPagination } from '@src/const/const';
+// import { useNavigate, useSearchParams } from 'react-router';
+import { useLocalStorage } from '@src/hooks/useLocalStorage';
 import {
   apiSlice,
   useGetSpacecraftsQuery,
   useLazyGetSpacecraftsQuery,
   useRefreshSpacecraftsMutation,
-} from '@/store/slice/apiSlice';
-import { isApiError } from '@/utils/valid';
+} from 'src/store/slice/apiSlice';
+import { isApiError } from '@src/utils/valid';
 import { useDispatch } from 'react-redux';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 type Props = {
   onSearchResults: (
@@ -33,11 +36,14 @@ type Props = {
 
 export const TopControls = ({
   onSearchResults,
-  spacecraftSelectedId,
+  // spacecraftSelectedId,
 }: Props) => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [totalPages, setTotalPages] = useState(0);
-  const [searchParams, setSearchParams] = useSearchParams();
+  // const [searchParams, setSearchParams] = useSearchParams();
   const [storedSearchQuery, setStoredSearchQuery] = useLocalStorage();
   const searchQueryRef = useRef(storedSearchQuery);
   const [dataSource, setDataSource] = useState<boolean | null>(null);
@@ -98,7 +104,12 @@ export const TopControls = ({
       setPagination(defaultPagination);
       searchQueryRef.current = '';
       setStoredSearchQuery('');
-      void navigate('/', { replace: true });
+
+      const params = new URLSearchParams();
+      params.set('page', defaultPagination.pageNumber.toString());
+      params.set('size', defaultPagination.pageSize.toString());
+      router.push(`${pathname}?${params.toString()}`);
+      // void navigate('/', { replace: true });
 
       await triggerSearch({
         searchQuery: '',
@@ -111,9 +122,6 @@ export const TopControls = ({
 
   const handleSearch = () => {
     const isLoading = isFetching || isLazyFetching;
-    console.log(error);
-    console.log(error && isApiError(error) ? error : null);
-    console.log(isApiError(error));
 
     onSearchResults(
       data?.spacecraft || [],
@@ -130,19 +138,20 @@ export const TopControls = ({
   useEffect(() => {
     setDataSource(isFetching);
 
-    const params = new URLSearchParams();
-    params.set('page', `${pagination.pageNumber}`);
-    if (
-      typeof spacecraftSelectedId === 'number' &&
-      Number.isInteger(spacecraftSelectedId) &&
-      spacecraftSelectedId >= 0
-    ) {
-      params.set('id', `${spacecraftSelectedId}`);
-      void navigate(`/details?${params.toString()}`, { replace: true });
-    } else {
-      void navigate(`/?${params.toString()}`, { replace: true });
-    }
-  }, [pagination, setSearchParams, spacecraftSelectedId]);
+    // const params = new URLSearchParams();
+    // params.set('page', `${pagination.pageNumber}`);
+    // if (
+    //   typeof spacecraftSelectedId === 'number' &&
+    //   Number.isInteger(spacecraftSelectedId) &&
+    //   spacecraftSelectedId >= 0
+    // ) {
+    //   params.set('id', `${spacecraftSelectedId}`);
+    //   void navigate(`/details?${params.toString()}`, { replace: true });
+    // } else {
+    //   void navigate(`/?${params.toString()}`, { replace: true });
+    // }
+    // }, [pagination, setSearchParams, spacecraftSelectedId]);
+  }, [isFetching]);
 
   useEffect(() => {
     handleSearch();

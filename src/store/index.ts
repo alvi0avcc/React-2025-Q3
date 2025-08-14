@@ -1,3 +1,5 @@
+'use client';
+
 import { configureStore } from '@reduxjs/toolkit';
 import selectedSpacecraftReducer from './slice/selectedSpacecraftSlice';
 import { apiSlice } from './slice/apiSlice';

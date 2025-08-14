@@ -1,11 +1,11 @@
 import styles from './response.module.css';
-import type { Spacecraft } from '@/types/types';
-import { getDisplayValue } from '@/utils/valid';
+import type { Spacecraft } from '@src/types/types';
+import { getDisplayValue } from '@src/utils/valid';
 import { useState } from 'react';
 import { Outlet } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
-import { toggleSpacecraft } from '@/store/slice/selectedSpacecraftSlice';
-import type { RootState } from '@/store/store';
+import { toggleSpacecraft } from 'src/store/slice/selectedSpacecraftSlice';
+import type { RootState } from 'src/store';
 
 type Props = {
   spacecrafts: Spacecraft[];
@@ -42,7 +42,7 @@ export const ResultsResponse = ({
     <div className={styles.response}>
       <table className={styles.table}>
         <thead>
-          <tr>
+          <tr className={styles.rowHover}>
             <th className={styles.colSelect}>Select</th>
             <th>Name</th>
             <th>Class</th>

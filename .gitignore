@@ -25,3 +25,6 @@ coverage
 *.sw?
 
 *.tsbuildinfo
+
+.next
+next-env.d.ts

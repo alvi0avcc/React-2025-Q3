@@ -1,5 +1,5 @@
-import { ApiError } from '@/api/api';
-import type { Spacecraft, SpacecraftsTotalInfo } from '@/types/types';
+import { ApiError } from '@src/api/api';
+import type { Spacecraft, SpacecraftsTotalInfo } from '@src/types/types';
 
 const isValidSpacecraft = (spacecraft: unknown): spacecraft is Spacecraft => {
   return (

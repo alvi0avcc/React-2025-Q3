@@ -2,14 +2,14 @@ import {
   baseUrl,
   defaultPagination,
   delayBetweenRequests,
-} from '@/const/const';
+} from '@src/const/const';
 import type {
   PaginationOptions,
   Spacecraft,
   SpacecraftsTotalInfo,
-} from '@/types/types';
-import pause from '@/utils/pause';
-import { isSpacecraftsTotalInfo, isValidSpacecrafts } from '@/utils/valid';
+} from '@src/types/types';
+import pause from '@src/utils/pause';
+import { isSpacecraftsTotalInfo, isValidSpacecrafts } from '@src/utils/valid';
 
 export class ApiError extends Error {
   public status?: number;

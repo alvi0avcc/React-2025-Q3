@@ -1,9 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux';
-import type { RootState } from '@/store/store';
-import { clearSelected } from '@/store/slice/selectedSpacecraftSlice';
+import type { RootState } from 'src/store';
+import { clearSelected } from 'src/store/slice/selectedSpacecraftSlice';
 import styles from './SelectedItemsPopUp.module.css';
 import { useRef } from 'react';
-import { getDisplayValue } from '@/utils/valid';
+import { getDisplayValue } from '@src/utils/valid';
 
 export const SelectedItemsPopUp = () => {
   const dispatch = useDispatch();

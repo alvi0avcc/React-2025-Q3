@@ -1,9 +1,9 @@
 import styles from './results.module.css';
 import { ResultsResponse } from './response/response';
 import { ResultsReject } from './reject/reject';
-import type { Spacecraft } from '@/types/types';
-import type { ApiError } from '@/api/api';
-import { Loader } from '@/components/loader/loader';
+import type { Spacecraft } from '@src/types/types';
+import type { ApiError } from '@src/api/api';
+import { Loader } from 'src/components/loader/loader';
 
 type Props = {
   spacecrafts: Spacecraft[];

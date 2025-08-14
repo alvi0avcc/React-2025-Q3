@@ -1,4 +1,6 @@
-import { localStorageKey } from '@/const/const';
+'use client';
+
+import { localStorageKey } from '@src/const/const';
 import { useState, useEffect } from 'react';
 
 export function useLocalStorage(

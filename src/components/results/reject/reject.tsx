@@ -1,6 +1,6 @@
 import styles from './reject.module.css';
-import { isApiError } from '@/utils/valid';
-import type { ApiError } from '@/api/api';
+import { isApiError } from '@src/utils/valid';
+import type { ApiError } from '@src/api/api';
 
 type Props = {
   error: ApiError;
