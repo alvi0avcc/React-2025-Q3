@@ -1,45 +1,54 @@
+'use client';
+
 import { useDispatch, useSelector } from 'react-redux';
-import type { RootState } from 'src/store';
-import { clearSelected } from 'src/store/slice/selectedSpacecraftSlice';
+import type { RootState } from '@src/store';
+import { clearSelected } from '@src/store/slice/selectedSpacecraftSlice';
 import styles from './SelectedItemsPopUp.module.css';
-import { useRef } from 'react';
-import { getDisplayValue } from '@src/utils/valid';
+import { useState, useRef } from 'react';
 
 export const SelectedItemsPopUp = () => {
   const dispatch = useDispatch();
   const { selectedItems } = useSelector(
     (state: RootState) => state.selectedSpacecraft
   );
-  const saveLink = useRef<HTMLAnchorElement>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const downloadLinkRef = useRef<HTMLAnchorElement>(null);
 
   const handleUnselectAll = () => {
     dispatch(clearSelected());
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (selectedItems.length === 0) return;
 
-    const headers = ['UID', 'Name', 'Class', 'Status', 'Registry', 'Species'];
-    const csvRows = selectedItems.map(item =>
-      [
-        `"${item.uid}"`,
-        `"${item.name}"`,
-        getDisplayValue(item.spacecraftClass?.name),
-        getDisplayValue(item.status),
-        getDisplayValue(item.registry),
-        getDisplayValue(item.species),
-      ].join(',')
-    );
+    setIsLoading(true);
 
-    const csvContent = [headers.join(','), ...csvRows].join('\n');
+    try {
+      const response = await fetch('/api/generate-csv', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ selectedItems }),
+      });
 
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
-    if (saveLink.current) {
-      saveLink.current.href = url;
-      saveLink.current.download = `${selectedItems.length}_items.csv`;
-      saveLink.current.click();
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+
+      if (downloadLinkRef.current) {
+        downloadLinkRef.current.href = url;
+        downloadLinkRef.current.download = `${selectedItems.length}_items.csv`;
+        downloadLinkRef.current.click();
+        URL.revokeObjectURL(url);
+      }
+    } catch (error) {
+      console.error('Download failed:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -55,14 +64,27 @@ export const SelectedItemsPopUp = () => {
           selected
         </span>
 
-        <button onClick={handleUnselectAll} className={styles.popUpButton}>
+        <button
+          onClick={handleUnselectAll}
+          className={styles.popUpButton}
+          disabled={isLoading}
+        >
           Unselect all
         </button>
 
-        <button onClick={handleSave} className={styles.popUpButton}>
-          Download
+        <button
+          onClick={handleSave}
+          className={styles.popUpButton}
+          disabled={isLoading}
+        >
+          {isLoading ? 'Generating...' : 'Download'}
         </button>
-        <a ref={saveLink} style={{ display: 'none' }}></a>
+
+        <a
+          ref={downloadLinkRef}
+          style={{ display: 'none' }}
+          aria-hidden="true"
+        />
       </div>
     </div>
   );
