@@ -7,7 +7,7 @@ import type {
 import {
   baseUrl,
   defaultPagination,
-  keepUnusedDataFor,
+  keepUnusedDataForSec,
 } from '@src/const/const';
 import { isValidSpacecrafts, isSpacecraftsTotalInfo } from '@src/utils/valid';
 
@@ -75,7 +75,7 @@ export const apiSlice = createApi({
           info,
         };
       },
-      keepUnusedDataFor: keepUnusedDataFor,
+      keepUnusedDataFor: keepUnusedDataForSec,
     }),
     refreshSpacecrafts: builder.mutation<null, void>({
       queryFn: () => ({ data: null }),

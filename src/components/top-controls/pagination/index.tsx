@@ -1,4 +1,4 @@
-import type { PaginationOptions } from '@/types/types';
+import type { PaginationOptions } from '@src/types/types';
 
 interface Props {
   pagination: PaginationOptions;

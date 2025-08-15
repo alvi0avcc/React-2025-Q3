@@ -1,7 +1,7 @@
 import {
   baseUrl,
   defaultPagination,
-  delayBetweenRequests,
+  delayBetweenRequestsMsec,
 } from '@src/const/const';
 import type {
   PaginationOptions,
@@ -41,7 +41,7 @@ export const buildSearchParams = (
 const spacecraftsFetch = async (
   params: URLSearchParams
 ): Promise<Response | undefined> => {
-  await pause(delayBetweenRequests);
+  await pause(delayBetweenRequestsMsec);
 
   try {
     const response: Response = await fetch(baseUrl, {

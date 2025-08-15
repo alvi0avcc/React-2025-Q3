@@ -2,6 +2,6 @@
 const nextConfig = {
   output: 'export',
   distDir: './dist',
-}
- 
-export default nextConfig
+};
+
+export default nextConfig;
