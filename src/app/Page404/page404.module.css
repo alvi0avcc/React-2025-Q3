@@ -1,5 +1,5 @@
 .main404 {
-  height: 100%;
+  flex: 1;
   background-image: var(--url-404);
   background-repeat: no-repeat;
   background-position: center;

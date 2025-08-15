@@ -1,5 +1,5 @@
+import Link from 'next/link';
 import styles from './about.module.css';
-import { NavLink } from 'react-router';
 
 const About = () => {
   return (
@@ -19,9 +19,9 @@ const About = () => {
         Aleksandr
       </a>
       <br />
-      <NavLink className={styles.goHome} to="/" end>
+      <Link className={styles.goHome} href="/">
         Back to Home Page
-      </NavLink>
+      </Link>
 
       <br />
 
