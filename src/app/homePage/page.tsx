@@ -1,11 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { TopControls } from 'src/components/top-controls/top-controls';
-import { Results } from 'src/components/results/results';
+import { TopControls } from '@/top-controls';
+import { Results } from '@/results';
 import type { Spacecraft, SpacecraftsTotalInfo } from '../../types/types';
 import type { ApiError } from '../../api/api';
-import { SelectedItemsPopUp } from 'src/components/selectedItemsPopUp/selectedItemsPopUp';
+import { SelectedItemsPopUp } from '@/selectedItemsPopUp';
 
 type State = {
   searchResults: Spacecraft[];

@@ -1,7 +1,7 @@
-import type { Spacecraft } from '@/types/types';
+import type { Spacecraft } from '@src/types/types';
 import styles from './details.module.css';
 import { useOutletContext, useLocation } from 'react-router';
-import { getDisplayValue } from '@/utils/valid';
+import { getDisplayValue } from '@src/utils/valid';
 
 type ContextType = {
   spacecraft: Spacecraft | null;

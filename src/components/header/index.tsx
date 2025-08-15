@@ -3,11 +3,8 @@
 import Link from 'next/link';
 import styles from './header.module.css';
 
-// import { NavLink } from 'react-router';
 import { useTheme } from 'src/context/themeProvider';
-// import MoonIcon from '@/assets/moon.svg';
-// import SunIcon from '@/assets/sun.svg';
-// import LogoIcon from '@/assets/react.svg';
+import Image from 'next/image';
 
 const Header = () => {
   const { theme, toggleTheme } = useTheme();
@@ -15,7 +12,13 @@ const Header = () => {
   return (
     <header className={styles.header}>
       <Link className={styles.logo} href="/">
-        {/* <img src={LogoIcon} alt="Logo" key="logo" /> */}
+        <Image
+          src="/images/react.svg"
+          alt="Logo"
+          width={32}
+          height={32}
+          priority
+        />
       </Link>
       <div>
         <Link className={styles.navAbout} href="/about">
@@ -28,11 +31,21 @@ const Header = () => {
           title={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
           aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
         >
-          {/* {theme === 'light' ? (
-            <img src={MoonIcon} alt="Dark mode" />
+          {theme === 'light' ? (
+            <Image
+              src="/images/moon.svg"
+              alt="Dark mode"
+              width={24}
+              height={24}
+            />
           ) : (
-            <img src={SunIcon} alt="Light mode" />
-          )} */}
+            <Image
+              src="/images/sun.svg"
+              alt="Light mode"
+              width={24}
+              height={24}
+            />
+          )}
         </button>
       </div>
     </header>

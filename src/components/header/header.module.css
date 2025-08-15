@@ -30,10 +30,6 @@
   height: 0;
 }
 
-.themeToggle img {
-  width: 20px;
-}
-
 .logo img:hover {
   transition: 1s;
   transform: rotate(180deg);

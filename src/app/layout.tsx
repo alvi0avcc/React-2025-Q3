@@ -2,7 +2,7 @@
 
 import './globals.css';
 
-import Header from 'src/components/header/header';
+import Header from '@/header';
 import { ThemeProvider } from 'src/context/themeProvider';
 import { Wrapper } from '@/wrapper';
 import { Provider } from 'react-redux';

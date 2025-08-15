@@ -2,17 +2,16 @@
 
 import { useEffect, useRef, useState } from 'react';
 import styles from './top-controls.module.css';
-import { SearchInputField } from './search-input-field/search-input-field';
-import { SearchButton } from './search-button/search-button';
+import { SearchInputField } from './search-input-field';
+import { SearchButton } from './search-button';
 import type {
   PaginationOptions,
   Spacecraft,
   SpacecraftsTotalInfo,
 } from '@src/types/types';
 import { type ApiError } from '@src/api/api';
-import { Pagination } from './pagination/pagination';
+import { Pagination } from './pagination';
 import { defaultPagination } from '@src/const/const';
-// import { useNavigate, useSearchParams } from 'react-router';
 import { useLocalStorage } from '@src/hooks/useLocalStorage';
 import {
   apiSlice,
@@ -34,16 +33,11 @@ type Props = {
   spacecraftSelectedId?: number | null;
 };
 
-export const TopControls = ({
-  onSearchResults,
-  // spacecraftSelectedId,
-}: Props) => {
-  // const navigate = useNavigate();
+export const TopControls = ({ onSearchResults }: Props) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [totalPages, setTotalPages] = useState(0);
-  // const [searchParams, setSearchParams] = useSearchParams();
   const [storedSearchQuery, setStoredSearchQuery] = useLocalStorage();
   const searchQueryRef = useRef(storedSearchQuery);
   const [dataSource, setDataSource] = useState<boolean | null>(null);
@@ -109,7 +103,6 @@ export const TopControls = ({
       params.set('page', defaultPagination.pageNumber.toString());
       params.set('size', defaultPagination.pageSize.toString());
       router.push(`${pathname}?${params.toString()}`);
-      // void navigate('/', { replace: true });
 
       await triggerSearch({
         searchQuery: '',
@@ -137,20 +130,6 @@ export const TopControls = ({
 
   useEffect(() => {
     setDataSource(isFetching);
-
-    // const params = new URLSearchParams();
-    // params.set('page', `${pagination.pageNumber}`);
-    // if (
-    //   typeof spacecraftSelectedId === 'number' &&
-    //   Number.isInteger(spacecraftSelectedId) &&
-    //   spacecraftSelectedId >= 0
-    // ) {
-    //   params.set('id', `${spacecraftSelectedId}`);
-    //   void navigate(`/details?${params.toString()}`, { replace: true });
-    // } else {
-    //   void navigate(`/?${params.toString()}`, { replace: true });
-    // }
-    // }, [pagination, setSearchParams, spacecraftSelectedId]);
   }, [isFetching]);
 
   useEffect(() => {

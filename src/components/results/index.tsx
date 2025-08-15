@@ -1,6 +1,6 @@
 import styles from './results.module.css';
-import { ResultsResponse } from './response/response';
-import { ResultsReject } from './reject/reject';
+import { ResultsResponse } from './response';
+import { ResultsReject } from './reject';
 import type { Spacecraft } from '@src/types/types';
 import type { ApiError } from '@src/api/api';
 import { Loader } from 'src/components/loader/loader';
