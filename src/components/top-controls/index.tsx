@@ -65,12 +65,23 @@ export const TopControls = ({ onSearchResults }: Props) => {
 
   const [refreshSpacecrafts] = useRefreshSpacecraftsMutation();
 
+  const updateURL = (newPagination: PaginationOptions, searchQuery: string) => {
+    const params = new URLSearchParams();
+    params.set('page', newPagination.pageNumber.toString());
+    if (searchQuery) {
+      params.set('search', searchQuery);
+    }
+    router.push(`${pathname}?${params.toString()}`);
+  };
+
   const handleSearchRequest = () => {
-    setPagination({
+    const newPagination = {
       pageNumber: defaultPagination.pageNumber,
       pageSize: pagination.pageSize,
-    });
+    };
+    setPagination(newPagination);
     setStoredSearchQuery(searchQueryRef.current);
+    updateURL(newPagination, searchQueryRef.current);
     handleSearch();
   };
 
@@ -80,6 +91,7 @@ export const TopControls = ({ onSearchResults }: Props) => {
 
   const onPaginationChange = (newPagination: PaginationOptions) => {
     setPagination(newPagination);
+    updateURL(newPagination, searchQueryRef.current);
   };
 
   const handleManualRefresh = async () => {
@@ -98,11 +110,7 @@ export const TopControls = ({ onSearchResults }: Props) => {
       setPagination(defaultPagination);
       searchQueryRef.current = '';
       setStoredSearchQuery('');
-
-      const params = new URLSearchParams();
-      params.set('page', defaultPagination.pageNumber.toString());
-      params.set('size', defaultPagination.pageSize.toString());
-      router.push(`${pathname}?${params.toString()}`);
+      updateURL(defaultPagination, '');
 
       await triggerSearch({
         searchQuery: '',

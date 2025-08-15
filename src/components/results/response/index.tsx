@@ -2,10 +2,12 @@ import styles from './response.module.css';
 import type { Spacecraft } from '@src/types/types';
 import { getDisplayValue } from '@src/utils/valid';
 import { useState } from 'react';
-import { Outlet } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleSpacecraft } from 'src/store/slice/selectedSpacecraftSlice';
 import type { RootState } from 'src/store';
+import classNames from 'classnames';
+import { useRouter, useSearchParams } from 'next/navigation';
+import Details from '../details';
 
 type Props = {
   spacecrafts: Spacecraft[];
@@ -16,6 +18,8 @@ export const ResultsResponse = ({
   spacecrafts,
   onSpacecraftSelected,
 }: Props) => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [spacecraft, setSpacecraft] = useState<Spacecraft | null>(null);
   const dispatch = useDispatch();
   const { selectedIds } = useSelector(
@@ -23,8 +27,14 @@ export const ResultsResponse = ({
   );
 
   const handleSpacecraftSelected = (id: number) => {
+    const selectedSpacecraft = spacecrafts[id];
+    setSpacecraft(selectedSpacecraft);
+
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('detail', selectedSpacecraft.uid.toString());
+    router.push(`?${params.toString()}`, { scroll: false });
+
     if (onSpacecraftSelected) {
-      setSpacecraft(spacecrafts[id]);
       onSpacecraftSelected(id);
     }
   };
@@ -35,6 +45,9 @@ export const ResultsResponse = ({
 
   const handleCloseDetails = () => {
     setSpacecraft(null);
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete('detail');
+    router.push(`?${params.toString()}`, { scroll: false });
     onSpacecraftSelected?.(-1);
   };
 
@@ -42,7 +55,7 @@ export const ResultsResponse = ({
     <div className={styles.response}>
       <table className={styles.table}>
         <thead>
-          <tr className={styles.rowHover}>
+          <tr>
             <th className={styles.colSelect}>Select</th>
             <th>Name</th>
             <th>Class</th>
@@ -53,8 +66,11 @@ export const ResultsResponse = ({
           {spacecrafts.map((item, id) => (
             <tr
               key={item.uid}
-              onClick={() => handleSpacecraftSelected?.(id)}
-              className={selectedIds.includes(item.uid) ? styles.selected : ''}
+              onClick={() => handleSpacecraftSelected(id)}
+              className={classNames(
+                selectedIds.includes(item.uid) ? styles.selected : '',
+                styles.rowHover
+              )}
             >
               <td>
                 <input
@@ -72,7 +88,7 @@ export const ResultsResponse = ({
         </tbody>
       </table>
 
-      <Outlet
+      <Details
         context={{ spacecraft: spacecraft, onClose: handleCloseDetails }}
       />
     </div>

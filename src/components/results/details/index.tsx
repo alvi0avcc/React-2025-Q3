@@ -1,6 +1,5 @@
 import type { Spacecraft } from '@src/types/types';
 import styles from './details.module.css';
-import { useOutletContext, useLocation } from 'react-router';
 import { getDisplayValue } from '@src/utils/valid';
 
 type ContextType = {
@@ -8,13 +7,10 @@ type ContextType = {
   onClose: () => void;
 };
 
-export const Details = () => {
-  const { spacecraft, onClose } = useOutletContext<ContextType>();
+const Details = ({ context }: { context: ContextType }) => {
+  const { spacecraft, onClose } = context;
 
-  const location = useLocation();
-
-  const spacecraftFromState = location.state?.spacecraft;
-  const ship: Spacecraft = spacecraft || spacecraftFromState;
+  const ship: Spacecraft | null = spacecraft;
 
   if (!ship) return;
 
@@ -39,3 +35,5 @@ export const Details = () => {
     </fieldset>
   );
 };
+
+export default Details;
