@@ -12,13 +12,7 @@ const Header = () => {
   return (
     <header className={styles.header}>
       <Link className={styles.logo} href="/">
-        <Image
-          src="/images/react.svg"
-          alt="Logo"
-          width={32}
-          height={32}
-          priority
-        />
+        <Image src="/images/react.svg" alt="Logo" width={32} height={32} />
       </Link>
       <div>
         <Link className={styles.navAbout} href="/about">
