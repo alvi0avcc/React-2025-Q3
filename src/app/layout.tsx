@@ -10,6 +10,7 @@ import { store } from '@src/store/';
 import { ErrorBoundary } from '@/error-boundary';
 
 import { useEffect, useState } from 'react';
+import Loader from '@/loader';
 
 export default function RootLayout({
   children,
@@ -32,7 +33,7 @@ export default function RootLayout({
         <ErrorBoundary>
           <main id="root">
             {!isClient ? (
-              <div>Loading...</div>
+              <Loader />
             ) : (
               <Provider store={store}>
                 <ThemeProvider>
