@@ -20,18 +20,28 @@ export const apiSlice = createApi({
       { spacecraft: Spacecraft[]; info?: SpacecraftsTotalInfo },
       { searchQuery: string; options?: PaginationOptions; refresh?: boolean }
     >({
-      query: ({ searchQuery, options = defaultPagination }) => ({
-        url: '',
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-          name: searchQuery.trim(),
-          pageNumber: `${options.pageNumber || defaultPagination.pageNumber}`,
-          pageSize: `${options.pageSize || defaultPagination.pageSize}`,
-        }),
-      }),
+      query: ({ searchQuery, options = defaultPagination }) => {
+        const urlParams = new URLSearchParams();
+        urlParams.append(
+          'pageNumber',
+          `${options.pageNumber || defaultPagination.pageNumber}`
+        );
+        urlParams.append(
+          'pageSize',
+          `${options.pageSize || defaultPagination.pageSize}`
+        );
+
+        return {
+          url: `?${urlParams.toString()}`,
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: new URLSearchParams({
+            name: searchQuery.trim(),
+          }),
+        };
+      },
       providesTags: result =>
         result
           ? [
