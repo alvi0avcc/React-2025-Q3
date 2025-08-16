@@ -13,7 +13,9 @@ import { isValidSpacecrafts, isSpacecraftsTotalInfo } from '@src/utils/valid';
 
 export const apiSlice = createApi({
   reducerPath: 'api',
-  baseQuery: fetchBaseQuery({ baseUrl }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: '/api/proxy',
+  }),
   tagTypes: ['Spacecrafts'],
   endpoints: builder => ({
     getSpacecrafts: builder.query<
@@ -35,10 +37,11 @@ export const apiSlice = createApi({
           url: `?${urlParams.toString()}`,
           method: 'POST',
           headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Type': 'application/json',
           },
-          body: new URLSearchParams({
+          body: JSON.stringify({
             name: searchQuery.trim(),
+            originalUrl: `${baseUrl}?${urlParams.toString()}`,
           }),
         };
       },
