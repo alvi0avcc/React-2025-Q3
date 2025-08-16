@@ -1,0 +1,75 @@
+{
+  "LanguageSwitcher": {
+    "english": "Inglés",
+    "spanish": "Español",
+    "switchTo": "Cambiar a"
+  },
+  "About": {
+    "about": "Acerca de",
+    "description": "La aplicación fue desarrollada de acuerdo a una tarea educativa.",
+    "respect": "Con respecto a usted",
+    "back": "Volver a la página de inicio"
+  },
+  "Header": {
+    "about": "Acerca de",
+    "switch": "Cambiar a"
+  },
+  "HomePage": {
+    "title": "API de Star Trek. Next RSS"
+  },
+  "TopControls": {
+    "freshData": "Datos frescos",
+    "cachedData": "Datos en caché",
+    "refreshPage": "Actualizar página actual",
+    "refreshAll": "Restablecer toda la caché"
+  },
+  "Pagination": {
+    "prev": "Previo",
+    "next": "Próximo",
+    "page": "Página",
+    "of": "de"
+  },
+  "SearchInputField": {
+    "input": "Introduzca el nombre del barco..."
+  },
+  "SearchButton": {
+    "search": "Buscar",
+    "searching": "Búsqueda..."
+  },
+  "ResultsResponse": {
+    "select": "Seleccionar",
+    "name": "Nombre",
+    "class": "Clase",
+    "status": "Estado"
+  },
+  "ResultsReject": {
+    "404": "Error 404. No se encontró el recurso solicitado. Por favor, revise su búsqueda.",
+    "405": "Error-405. Método no permitido: este punto final no acepta el método de solicitud utilizado.",
+    "5xx": "Error-5xx. Nuestros servidores tienen problemas. Inténtalo de nuevo más tarde.",
+    "error": "Error Loading Data"
+  },
+  "Page404": {
+    "back": "Volver a la página de inicio"
+  },
+  "Loader": {
+    "loader": "Cargando datos..."
+  },
+  "Details": {
+    "details": "Detalles",
+    "uid": "uid",
+    "registry": "registro",
+    "status": "Estado",
+    "dateStatus": "fechaEstado",
+    "species": "especies",
+    "owner": "dueño",
+    "operator": "operador",
+    "affiliation": "afiliación",
+    "class": "Clase"
+  },
+  "SelectedItemsPopUp": {
+    "selected": "Seleccionado",
+    "unselect": "Deseleccionar todo",
+    "generating": "Generando...",
+    "download": "Descargar"
+  }
+}

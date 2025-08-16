@@ -1,9 +1,15 @@
-import './globals.css';
+'use client';
 
+import './globals.css';
 import Header from '@/header';
 import { ThemeProvider } from 'src/context/themeProvider';
 import { Wrapper } from '@/wrapper';
 import { ErrorBoundary } from '@/error-boundary';
+import { NextIntlClientProvider } from 'next-intl';
+import { LocaleProvider, useLocaleContext } from '@src/context/localeContext';
+
+import enMessages from '@src/app/messages/en.json';
+import esMessages from '@src/app/messages/es.json';
 
 export default function RootLayout({
   children,
@@ -20,12 +26,29 @@ export default function RootLayout({
         <ErrorBoundary>
           <ThemeProvider>
             <Wrapper>
-              <Header />
-              <main id="root">{children}</main>
+              <LocaleProvider>
+                <LocaleContent children={children} />
+              </LocaleProvider>
             </Wrapper>
           </ThemeProvider>
         </ErrorBoundary>
       </body>
     </html>
+  );
+}
+
+function LocaleContent({ children }: { children: React.ReactNode }) {
+  const { locale } = useLocaleContext();
+
+  return (
+    <NextIntlClientProvider
+      locale={locale}
+      messages={locale === 'en' ? enMessages : esMessages}
+      timeZone="UTC"
+      now={new Date()}
+    >
+      <Header />
+      <main id="root">{children}</main>
+    </NextIntlClientProvider>
   );
 }

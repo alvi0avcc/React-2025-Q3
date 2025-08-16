@@ -8,6 +8,7 @@ import type { RootState } from 'src/store';
 import classNames from 'classnames';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Details from '../details';
+import { useTranslations } from 'next-intl';
 
 type Props = {
   spacecrafts: Spacecraft[];
@@ -18,6 +19,7 @@ export const ResultsResponse = ({
   spacecrafts,
   onSpacecraftSelected,
 }: Props) => {
+  const t = useTranslations('ResultsResponse');
   const router = useRouter();
   const searchParams = useSearchParams();
   const [spacecraft, setSpacecraft] = useState<Spacecraft | null>(null);
@@ -56,10 +58,10 @@ export const ResultsResponse = ({
       <table className={styles.table}>
         <thead>
           <tr>
-            <th className={styles.colSelect}>Select</th>
-            <th>Name</th>
-            <th>Class</th>
-            <th>Status</th>
+            <th className={styles.colSelect}>{t('select')}</th>
+            <th>{t('name')}</th>
+            <th>{t('class')}</th>
+            <th>{t('status')}</th>
           </tr>
         </thead>
         <tbody>

@@ -5,9 +5,12 @@ import styles from './header.module.css';
 
 import { useTheme } from 'src/context/themeProvider';
 import Image from 'next/image';
+import LanguageSwitcher from '@/languageSwitcher';
+import { useTranslations } from 'next-intl';
 
 const Header = () => {
   const { theme, toggleTheme } = useTheme();
+  const t = useTranslations('Header');
 
   return (
     <header className={styles.header}>
@@ -16,14 +19,16 @@ const Header = () => {
       </Link>
       <div>
         <Link className={styles.navAbout} href="/about">
-          About
+          {t('about')}
         </Link>
+
+        <LanguageSwitcher />
 
         <button
           onClick={toggleTheme}
           className={styles.themeToggle}
-          title={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
-          aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
+          title={`${t('switch')} ${theme === 'light' ? 'dark' : 'light'} theme`}
+          aria-label={`${t('switch')} ${theme === 'light' ? 'dark' : 'light'} theme`}
         >
           {theme === 'light' ? (
             <Image

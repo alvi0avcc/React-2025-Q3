@@ -1,11 +1,13 @@
 import styles from './reject.module.css';
 import { isApiError } from '@src/utils/valid';
 import type { ApiError } from '@src/api/api';
+import { useTranslations } from 'next-intl';
 
 type Props = {
   error: ApiError;
 };
 export const ResultsReject = ({ error }: Props) => {
+  const t = useTranslations('ResultsReject');
   console.log('ResultsReject =', error);
 
   const errorHint = () => {
@@ -13,28 +15,14 @@ export const ResultsReject = ({ error }: Props) => {
 
     switch (error.status) {
       case 404: {
-        return (
-          <p className={styles.hint}>
-            Error-404. The requested resource was not found. Please check your
-            search query.
-          </p>
-        );
+        return <p className={styles.hint}>{t('404')}</p>;
       }
       case 405: {
-        return (
-          <p className={styles.hint}>
-            Error-405. Method Not Allowed: This endpoint does not accept the
-            request method used.
-          </p>
-        );
+        return <p className={styles.hint}>{t('405')}</p>;
       }
       default: {
         if ((error.status ?? 0) >= 500) {
-          return (
-            <p className={styles.hint}>
-              Error-5xx. Our servers are having issues. Please try again later.
-            </p>
-          );
+          return <p className={styles.hint}>{t('5xx')}</p>;
         }
 
         return <p className={styles.hint}>{error.status}</p>;
@@ -44,7 +32,7 @@ export const ResultsReject = ({ error }: Props) => {
 
   return (
     <div className={styles.reject}>
-      <h3 className={styles.title}>Error Loading Data</h3>
+      <h3 className={styles.title}>{t('error')}</h3>
 
       <p className={styles.message}>{error.message}</p>
 

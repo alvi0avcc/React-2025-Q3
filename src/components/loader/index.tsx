@@ -1,7 +1,11 @@
+'use client';
+
 import styles from './loader.module.css';
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 
 const Loader = () => {
+  const t = useTranslations('Loader');
   return (
     <div className={styles.container}>
       <Image
@@ -13,7 +17,7 @@ const Loader = () => {
         priority
         unoptimized={true}
       />
-      <div className={styles.loading}>Loading data...</div>
+      <div className={styles.loading}>{t('loader')}</div>
     </div>
   );
 };

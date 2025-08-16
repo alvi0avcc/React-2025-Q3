@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styles from './search-input-field.module.css';
+import { useTranslations } from 'next-intl';
 
 type Props = {
   initialValue?: string;
@@ -12,6 +13,7 @@ export const SearchInputField = ({
   onInputChange,
   onSearchRequest,
 }: Props) => {
+  const t = useTranslations('SearchInputField');
   const [searchValue, SetSearchValue] = useState(initialValue);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     SetSearchValue(e.target.value);
@@ -30,7 +32,7 @@ export const SearchInputField = ({
       value={searchValue}
       onChange={handleChange}
       onKeyUp={handleKeyUp}
-      placeholder="Enter the ship name..."
+      placeholder={t('input')}
     />
   );
 };

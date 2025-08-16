@@ -8,6 +8,7 @@ import type { ApiError } from '../../api/api';
 import { SelectedItemsPopUp } from '@/selectedItemsPopUp';
 import { Provider } from 'react-redux';
 import { store } from '@src/store';
+import { useTranslations } from 'next-intl';
 
 type State = {
   searchResults: Spacecraft[];
@@ -23,6 +24,7 @@ type HomePageClientProps = {
 };
 
 const HomePage = ({ initialData }: HomePageClientProps) => {
+  const t = useTranslations('HomePage');
   const [state, setState] = useState<State>({
     searchResults: initialData?.spacecraft || [],
     searchError: null,
@@ -52,7 +54,7 @@ const HomePage = ({ initialData }: HomePageClientProps) => {
 
   return (
     <Provider store={store}>
-      <h2>Star Trek API. Functional-components</h2>
+      <h2>{t('title')}</h2>
 
       <TopControls
         onSearchResults={handleSearchResults}

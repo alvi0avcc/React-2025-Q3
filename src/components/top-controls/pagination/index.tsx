@@ -1,4 +1,5 @@
 import type { PaginationOptions } from '@src/types/types';
+import { useTranslations } from 'next-intl';
 
 interface Props {
   pagination: PaginationOptions;
@@ -11,6 +12,7 @@ export const Pagination = ({
   onPaginationChange,
   totalPages,
 }: Props) => {
+  const t = useTranslations('Pagination');
   const { pageNumber, pageSize, maxItems } = pagination;
 
   const handlePrevPage = () => {
@@ -35,12 +37,12 @@ export const Pagination = ({
 
   return (
     <section>
-      <button onClick={handlePrevPage}>Prev</button>
+      <button onClick={handlePrevPage}>{t('prev')}</button>
       <label htmlFor="">
-        Page {pageNumber}
-        {totalPages ? ` of ${totalPages}` : ''}
+        {t('page')} {pageNumber}
+        {totalPages ? ` ${t('of')} ${totalPages}` : ''}
       </label>
-      <button onClick={handleNextPage}>Next</button>
+      <button onClick={handleNextPage}>{t('next')}</button>
     </section>
   );
 };

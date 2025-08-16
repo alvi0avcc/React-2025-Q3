@@ -1,0 +1,75 @@
+{
+  "LanguageSwitcher": {
+    "english": "English",
+    "spanish": "Spanish",
+    "switchTo": "Switch to"
+  },
+  "About": {
+    "about": "About",
+    "description": "The application was developed according to an educational assignment.",
+    "respect": "With respect to you",
+    "back": "Back to Home Page"
+  },
+  "Header": {
+    "about": "About",
+    "switch": "Switch to"
+  },
+  "HomePage": {
+    "title": "Star Trek API. Next RSS"
+  },
+  "TopControls": {
+    "freshData": "Fresh data",
+    "cachedData": "Cached data",
+    "refreshPage": "Refresh Current Page",
+    "refreshAll": "Reset All Cache"
+  },
+  "Pagination": {
+    "prev": "Prev",
+    "next": "Next",
+    "page": "Page",
+    "of": "of"
+  },
+  "SearchInputField": {
+    "input": "Enter the ship name..."
+  },
+  "SearchButton": {
+    "search": "Search",
+    "searching": "Searching..."
+  },
+  "ResultsResponse": {
+    "select": "Select",
+    "name": "Name",
+    "class": "Class",
+    "status": "Status"
+  },
+  "ResultsReject": {
+    "404": "Error-404. The requested resource was not found. Please check your search query.",
+    "405": "Error-405. Method Not Allowed: This endpoint does not accept the request method used.",
+    "5xx": "Error-5xx. Our servers are having issues. Please try again later.",
+    "error": "Error Loading Data"
+  },
+  "Page404": {
+    "back": "Back to Home Page"
+  },
+  "Loader": {
+    "loader": "Loading data..."
+  },
+  "Details": {
+    "details": "Details",
+    "uid": "uid",
+    "registry": "registry",
+    "status": "Status",
+    "dateStatus": "dateStatus",
+    "species": "species",
+    "owner": "owner",
+    "operator": "operator",
+    "affiliation": "affiliation",
+    "class": "Class"
+  },
+  "SelectedItemsPopUp": {
+    "selected": "Selected",
+    "unselect": "Unselect all",
+    "generating": "Generating...",
+    "download": "Download"
+  }
+}

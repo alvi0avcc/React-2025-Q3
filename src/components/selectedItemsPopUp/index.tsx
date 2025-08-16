@@ -5,8 +5,10 @@ import type { RootState } from '@src/store';
 import { clearSelected } from '@src/store/slice/selectedSpacecraftSlice';
 import styles from './SelectedItemsPopUp.module.css';
 import { useState, useRef } from 'react';
+import { useTranslations } from 'next-intl';
 
 export const SelectedItemsPopUp = () => {
+  const t = useTranslations('SelectedItemsPopUp');
   const dispatch = useDispatch();
   const { selectedItems } = useSelector(
     (state: RootState) => state.selectedSpacecraft
@@ -61,7 +63,7 @@ export const SelectedItemsPopUp = () => {
       <div className={styles.popupContent}>
         <span>
           {selectedItems.length} {selectedItems.length === 1 ? 'item' : 'items'}{' '}
-          selected
+          {t('selected')}
         </span>
 
         <button
@@ -69,7 +71,7 @@ export const SelectedItemsPopUp = () => {
           className={styles.popUpButton}
           disabled={isLoading}
         >
-          Unselect all
+          {t('unselect')}
         </button>
 
         <button
@@ -77,7 +79,7 @@ export const SelectedItemsPopUp = () => {
           className={styles.popUpButton}
           disabled={isLoading}
         >
-          {isLoading ? 'Generating...' : 'Download'}
+          {isLoading ? t('generating') : t('download')}
         </button>
 
         <a

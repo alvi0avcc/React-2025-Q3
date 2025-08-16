@@ -22,6 +22,7 @@ import { isApiError } from '@src/utils/valid';
 import { useDispatch } from 'react-redux';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { skipToken } from '@reduxjs/toolkit/query';
+import { useTranslations } from 'next-intl';
 
 type Props = {
   onSearchResults: (
@@ -38,6 +39,8 @@ type Props = {
 };
 
 export const TopControls = ({ onSearchResults, initialData }: Props) => {
+  const t = useTranslations('TopControls');
+
   const [init, setInit] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
@@ -173,13 +176,13 @@ export const TopControls = ({ onSearchResults, initialData }: Props) => {
 
       {!init ? (
         <fieldset className={styles.refresh}>
-          <legend>{dataSource ? 'Fresh data' : 'Cached data'}</legend>
+          <legend>{dataSource ? t('freshData') : t('cachedData')}</legend>
           <button
             onClick={handleManualRefresh}
             disabled={isFetching || isLazyFetching}
             className={styles.refreshButton}
           >
-            Refresh Current Page
+            {t('refreshPage')}
           </button>
 
           <button
@@ -187,7 +190,7 @@ export const TopControls = ({ onSearchResults, initialData }: Props) => {
             disabled={isFetching || isLazyFetching}
             className={styles.resetButton}
           >
-            Reset All Cache
+            {t('refreshAll')}
           </button>
         </fieldset>
       ) : null}

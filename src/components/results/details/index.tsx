@@ -1,6 +1,7 @@
 import type { Spacecraft } from '@src/types/types';
 import styles from './details.module.css';
 import { getDisplayValue } from '@src/utils/valid';
+import { useTranslations } from 'next-intl';
 
 type ContextType = {
   spacecraft: Spacecraft | null;
@@ -8,6 +9,7 @@ type ContextType = {
 };
 
 const Details = ({ context }: { context: ContextType }) => {
+  const t = useTranslations('Details');
   const { spacecraft, onClose } = context;
 
   const ship: Spacecraft | null = spacecraft;
@@ -20,18 +22,36 @@ const Details = ({ context }: { context: ContextType }) => {
         ⛒
       </div>
 
-      <legend>Details</legend>
+      <legend>{t('details')}</legend>
 
       <h3>{ship.name}</h3>
-      <p>uid: {ship.uid}</p>
-      <p>registry: {getDisplayValue(ship.registry)}</p>
-      <p>Status: {getDisplayValue(ship.status)}</p>
-      <p>dateStatus: {getDisplayValue(ship.dateStatus)}</p>
-      <p>species: {getDisplayValue(ship.species)}</p>
-      <p>owner: {getDisplayValue(ship.owner?.name)}</p>
-      <p>operator: {getDisplayValue(ship.operator?.name)}</p>
-      <p>affiliation: {getDisplayValue(ship.affiliation?.name)}</p>
-      <p>Class: {getDisplayValue(ship.spacecraftClass?.name)}</p>
+      <p>
+        {t('uid')}: {ship.uid}
+      </p>
+      <p>
+        {t('registry')}: {getDisplayValue(ship.registry)}
+      </p>
+      <p>
+        {t('status')}: {getDisplayValue(ship.status)}
+      </p>
+      <p>
+        {t('dateStatus')}: {getDisplayValue(ship.dateStatus)}
+      </p>
+      <p>
+        {t('species')}: {getDisplayValue(ship.species)}
+      </p>
+      <p>
+        {t('owner')}: {getDisplayValue(ship.owner?.name)}
+      </p>
+      <p>
+        {t('operator')}: {getDisplayValue(ship.operator?.name)}
+      </p>
+      <p>
+        {t('affiliation')}: {getDisplayValue(ship.affiliation?.name)}
+      </p>
+      <p>
+        {t('class')}: {getDisplayValue(ship.spacecraftClass?.name)}
+      </p>
     </fieldset>
   );
 };
