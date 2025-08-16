@@ -6,6 +6,8 @@ import { Results } from '@/results';
 import type { Spacecraft, SpacecraftsTotalInfo } from '../../types/types';
 import type { ApiError } from '../../api/api';
 import { SelectedItemsPopUp } from '@/selectedItemsPopUp';
+import { Provider } from 'react-redux';
+import { store } from '@src/store';
 
 type State = {
   searchResults: Spacecraft[];
@@ -13,9 +15,16 @@ type State = {
   isLoading: boolean;
 };
 
-const HomePage = () => {
+type HomePageClientProps = {
+  initialData?: {
+    spacecraft: Spacecraft[];
+    info?: SpacecraftsTotalInfo;
+  };
+};
+
+const HomePage = ({ initialData }: HomePageClientProps) => {
   const [state, setState] = useState<State>({
-    searchResults: [],
+    searchResults: initialData?.spacecraft || [],
     searchError: null,
     isLoading: false,
   });
@@ -42,12 +51,13 @@ const HomePage = () => {
   const { searchResults, searchError, isLoading } = state;
 
   return (
-    <>
+    <Provider store={store}>
       <h2>Star Trek API. Functional-components</h2>
 
       <TopControls
         onSearchResults={handleSearchResults}
         spacecraftSelectedId={selectedId}
+        initialData={initialData}
       />
 
       <Results
@@ -58,7 +68,7 @@ const HomePage = () => {
       />
 
       <SelectedItemsPopUp />
-    </>
+    </Provider>
   );
 };
 
