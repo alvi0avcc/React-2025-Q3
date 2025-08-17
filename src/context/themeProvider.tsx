@@ -1,6 +1,7 @@
+'use client';
+
 import { createContext, useContext, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
-import { useLocalStorage } from '@/hooks/useLocalStorage';
 
 type Theme = 'light' | 'dark';
 
@@ -17,26 +18,12 @@ interface ThemeProviderProps {
   storageKey?: string;
 }
 
-export const ThemeProvider = ({
-  children,
-  storageKey = 'theme',
-}: ThemeProviderProps) => {
-  const [storedTheme, setStoredTheme] = useLocalStorage(storageKey);
-
-  const getInitialTheme = (): Theme => {
-    if (storedTheme && (storedTheme === 'light' || storedTheme === 'dark')) {
-      return storedTheme;
-    }
-
-    return 'dark';
-  };
-
-  const [theme, setTheme] = useState<Theme>(getInitialTheme);
+export const ThemeProvider = ({ children }: ThemeProviderProps) => {
+  const [theme, setTheme] = useState<Theme>('dark');
 
   useEffect(() => {
-    setStoredTheme(theme);
     document.documentElement.className = theme;
-  }, [theme, setStoredTheme]);
+  }, [theme]);
 
   const toggleTheme = () => {
     setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'));

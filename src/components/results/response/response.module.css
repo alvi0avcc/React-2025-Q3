@@ -14,7 +14,7 @@
   border: 1px dotted;
 }
 
-tr:hover {
+.rowHover:hover {
   background-color: var(--table-row-hover);
   cursor: pointer;
 }

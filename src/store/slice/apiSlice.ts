@@ -3,31 +3,48 @@ import type {
   PaginationOptions,
   Spacecraft,
   SpacecraftsTotalInfo,
-} from '@/types/types';
-import { baseUrl, defaultPagination, keepUnusedDataFor } from '@/const/const';
-import { isValidSpacecrafts, isSpacecraftsTotalInfo } from '@/utils/valid';
+} from '@src/types/types';
+import {
+  baseUrl,
+  defaultPagination,
+  keepUnusedDataForSec,
+} from '@src/const/const';
+import { isValidSpacecrafts, isSpacecraftsTotalInfo } from '@src/utils/valid';
 
 export const apiSlice = createApi({
   reducerPath: 'api',
-  baseQuery: fetchBaseQuery({ baseUrl }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: '/api/proxy',
+  }),
   tagTypes: ['Spacecrafts'],
   endpoints: builder => ({
     getSpacecrafts: builder.query<
       { spacecraft: Spacecraft[]; info?: SpacecraftsTotalInfo },
       { searchQuery: string; options?: PaginationOptions; refresh?: boolean }
     >({
-      query: ({ searchQuery, options = defaultPagination }) => ({
-        url: '',
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-          name: searchQuery.trim(),
-          pageNumber: `${options.pageNumber || defaultPagination.pageNumber}`,
-          pageSize: `${options.pageSize || defaultPagination.pageSize}`,
-        }),
-      }),
+      query: ({ searchQuery, options = defaultPagination }) => {
+        const urlParams = new URLSearchParams();
+        urlParams.append(
+          'pageNumber',
+          `${options.pageNumber || defaultPagination.pageNumber}`
+        );
+        urlParams.append(
+          'pageSize',
+          `${options.pageSize || defaultPagination.pageSize}`
+        );
+
+        return {
+          url: `?${urlParams.toString()}`,
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name: searchQuery.trim(),
+            originalUrl: `${baseUrl}?${urlParams.toString()}`,
+          }),
+        };
+      },
       providesTags: result =>
         result
           ? [
@@ -71,7 +88,7 @@ export const apiSlice = createApi({
           info,
         };
       },
-      keepUnusedDataFor: keepUnusedDataFor,
+      keepUnusedDataFor: keepUnusedDataForSec,
     }),
     refreshSpacecrafts: builder.mutation<null, void>({
       queryFn: () => ({ data: null }),

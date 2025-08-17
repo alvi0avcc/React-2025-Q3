@@ -1,0 +1,20 @@
+.main404 {
+  flex: 1;
+  background-image: var(--url-404);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+.goHome {
+  display: block;
+  margin: 20px;
+  font-size: 1.5rem;
+  text-decoration: none;
+  color: #f00;
+}
+
+.goHome:hover {
+  color: #00f;
+  text-shadow: #f00 0 0 5px;
+}

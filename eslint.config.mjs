@@ -6,6 +6,7 @@ import tseslint from 'typescript-eslint';
 import eslintPluginPrettier from 'eslint-plugin-prettier/recommended';
 import eslintPluginUnicorn from 'eslint-plugin-unicorn';
 import prettierPlugin from 'eslint-plugin-prettier';
+import nextjs from '@next/eslint-plugin-next';
 
 export default tseslint
   .config(
@@ -25,6 +26,8 @@ export default tseslint
         'coverage/',
         'tests',
         '*.config.ts',
+        '.next/',
+        'next-env.d.ts',
       ],
     },
     {
@@ -40,18 +43,26 @@ export default tseslint
       files: ['**/*.{ts,tsx}'],
       languageOptions: {
         ecmaVersion: 2020,
-        globals: globals.browser,
+        globals: {
+          ...globals.browser,
+          ...globals.node,
+        },
         parserOptions: {
-          projectService: true,
+          project: './tsconfig.json',
           tsconfigRootDir: import.meta.dirname,
         },
       },
       plugins: {
         'react-hooks': reactHooks,
         'react-refresh': reactRefresh,
+        '@next/next': nextjs,
         prettier: prettierPlugin,
       },
       rules: {
+        '@next/next/no-html-link-for-pages': 'error',
+        '@next/next/no-img-element': 'warn',
+        '@next/next/no-async-client-component': 'warn',
+
         ...reactHooks.configs.recommended.rules,
         'react-refresh/only-export-components': [
           'warn',

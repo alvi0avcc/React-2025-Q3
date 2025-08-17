@@ -1,0 +1,55 @@
+import styles from './results.module.css';
+import { ResultsResponse } from './response';
+import { ResultsReject } from './reject';
+import type { Spacecraft } from '@src/types/types';
+import type { ApiError } from '@src/api/api';
+import Loader from '@/loader';
+
+type Props = {
+  spacecrafts: Spacecraft[];
+  error: ApiError | null;
+  isLoading: boolean;
+  onSpacecraftSelected?: (id: number) => void;
+};
+
+export const Results = ({
+  spacecrafts,
+  error,
+  isLoading,
+  onSpacecraftSelected,
+}: Props) => {
+  if (isLoading) {
+    return (
+      <section className={styles.results}>
+        <Loader />
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={styles.results}>
+        <ResultsReject error={error} />
+      </div>
+    );
+  }
+
+  if (spacecrafts.length === 0) {
+    return <div className={styles.empty}>No spacecrafts found</div>;
+  }
+
+  return (
+    <div className={styles.results}>
+      {!error ? (
+        <>
+          <ResultsResponse
+            spacecrafts={spacecrafts}
+            onSpacecraftSelected={onSpacecraftSelected}
+          />
+        </>
+      ) : (
+        <ResultsReject error={error} />
+      )}
+    </div>
+  );
+};
