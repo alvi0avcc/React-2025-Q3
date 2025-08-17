@@ -3,7 +3,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState } from '@src/store';
 import { clearSelected } from '@src/store/slice/selectedSpacecraftSlice';
-import styles from './SelectedItemsPopUp.module.css';
+import styles from './selectedItemsPopUp.module.css';
 import { useState, useRef } from 'react';
 import { useTranslations } from 'next-intl';
 
