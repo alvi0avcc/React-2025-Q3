@@ -1,24 +1,110 @@
 import { useRef, type FormEvent, type ChangeEvent, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import { addFormSubmission } from '@/store/formSlice';
 import styles from './form.module.css';
 import classNames from 'classnames';
+import { convertToBase64 } from '@/utils/convertToBase64';
+import type { MyFormData } from '@/types/types';
+import {
+  isGenderResult,
+  isFileResult,
+  isGender,
+  isString,
+} from '@/utils/valid';
 
 interface UncontrolledFormProps {
   onClose: () => void;
 }
 
 const UncontrolledForm = ({ onClose }: UncontrolledFormProps) => {
+  const dispatch = useAppDispatch();
+  const { countries } = useAppSelector(state => state.forms);
   const formRef = useRef<HTMLFormElement>(null);
   const [passwordStrength, setPasswordStrength] = useState('');
+  const [selectedFileName, setSelectedFileName] = useState('');
+  const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
 
-  const handleSubmit = (e: FormEvent) => {
+  const validateForm = (formData: MyFormData): boolean => {
+    const errors: { [key: string]: string } = {};
+
+    if (!formData.name.trim()) {
+      errors.name = 'Name is required';
+    } else if (!/^[A-Z]/.test(formData.name)) {
+      errors.name = 'Name must start with capital letter';
+    }
+
+    if (formData.age < 0 || Number.isNaN(formData.age)) {
+      errors.age = 'Age cannot be negative';
+    }
+
+    if (!formData.email) {
+      errors.email = 'Email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      errors.email = 'Invalid email address';
+    }
+
+    if (!isGender(formData.gender)) {
+      errors.gender = 'Invalid gender value';
+    }
+
+    if (!formData.country) {
+      errors.country = 'Country is required';
+    }
+
+    if (!formData.password) {
+      errors.password = 'Password is required';
+    } else if (formData.password.length < 8) {
+      errors.password = 'Password must be at least 8 characters';
+    }
+
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!formRef.current) return;
 
     const formData = new FormData(formRef.current);
-    const data = Object.fromEntries(formData.entries());
+    const pictureFile = isFileResult(formData.get('picture'));
 
-    console.log('Form data:', data);
+    let pictureBase64 = null;
+    if (pictureFile && pictureFile.size > 0) {
+      pictureBase64 = await convertToBase64(pictureFile);
+    }
 
+    const rawData = {
+      name: isString(formData.get('name')),
+      age: Number.parseInt(isString(formData.get('age'))),
+      email: isString(formData.get('email')),
+      password: isString(formData.get('password')),
+      gender: isGenderResult(formData.get('gender')),
+      acceptTerms: formData.get('acceptTerms') === 'on',
+      country: isString(formData.get('country')),
+    };
+
+    if (!isGender(rawData.gender)) {
+      setFormErrors({ gender: 'Invalid gender value' });
+      return;
+    }
+
+    const submissionData: MyFormData = {
+      type: 'uncontrolled',
+      name: rawData.name,
+      age: rawData.age,
+      email: rawData.email,
+      gender: isGenderResult(rawData.gender),
+      acceptTerms: rawData.acceptTerms,
+      pictureBase64,
+      country: rawData.country,
+      password: rawData.password,
+    };
+
+    if (!validateForm(submissionData)) {
+      return;
+    }
+
+    dispatch(addFormSubmission(submissionData));
     onClose();
   };
 
@@ -33,6 +119,28 @@ const UncontrolledForm = ({ onClose }: UncontrolledFormProps) => {
     setPasswordStrength(strength || 'Weak password');
   };
 
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    setSelectedFileName(file ? file.name : '');
+
+    if (file) {
+      const validTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+      const maxSize5MB = 5 * 1024 * 1024;
+
+      if (!validTypes.includes(file.type)) {
+        setFormErrors({ picture: 'Only PNG and JPEG files are allowed' });
+      } else if (file.size > maxSize5MB) {
+        setFormErrors({ picture: 'File size must be less than 5MB' });
+      } else {
+        setFormErrors(prev => ({ ...prev, picture: '' }));
+      }
+    }
+  };
+
+  const clearError = (fieldName: string) => {
+    setFormErrors(prev => ({ ...prev, [fieldName]: '' }));
+  };
+
   return (
     <div className={styles.formContainer}>
       <h2 className={styles.title}>Uncontrolled Form</h2>
@@ -40,17 +148,48 @@ const UncontrolledForm = ({ onClose }: UncontrolledFormProps) => {
       <form ref={formRef} onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.formGroup}>
           <label htmlFor="name">Name:</label>
-          <input type="text" id="name" name="name" required />
+          <input
+            type="text"
+            id="name"
+            name="name"
+            required
+            onChange={() => clearError('name')}
+            className={formErrors.name ? styles.error : ''}
+          />
+          {formErrors.name && (
+            <span className={styles.errorMessage}>{formErrors.name}</span>
+          )}
         </div>
 
         <div className={styles.formGroup}>
           <label htmlFor="age">Age:</label>
-          <input type="number" id="age" name="age" min="0" required />
+          <input
+            type="number"
+            id="age"
+            name="age"
+            min="0"
+            required
+            onChange={() => clearError('age')}
+            className={formErrors.age ? styles.error : ''}
+          />
+          {formErrors.age && (
+            <span className={styles.errorMessage}>{formErrors.age}</span>
+          )}
         </div>
 
         <div className={styles.formGroup}>
           <label htmlFor="email">Email:</label>
-          <input type="email" id="email" name="email" required />
+          <input
+            type="email"
+            id="email"
+            name="email"
+            required
+            onChange={() => clearError('email')}
+            className={formErrors.email ? styles.error : ''}
+          />
+          {formErrors.email && (
+            <span className={styles.errorMessage}>{formErrors.email}</span>
+          )}
         </div>
 
         <div className={styles.formGroup}>
@@ -59,13 +198,20 @@ const UncontrolledForm = ({ onClose }: UncontrolledFormProps) => {
             type="password"
             id="password"
             name="password"
-            onChange={handlePasswordChange}
+            onChange={e => {
+              handlePasswordChange(e);
+              clearError('password');
+            }}
             required
+            className={formErrors.password ? styles.error : ''}
           />
           {passwordStrength && (
             <div className={styles.passwordStrength}>
               Strength: {passwordStrength}
             </div>
+          )}
+          {formErrors.password && (
+            <span className={styles.errorMessage}>{formErrors.password}</span>
           )}
         </div>
 
@@ -83,24 +229,43 @@ const UncontrolledForm = ({ onClose }: UncontrolledFormProps) => {
           <label>Gender:</label>
           <div className={styles.radioGroup}>
             <label>
-              <input type="radio" name="gender" value="male" />
+              <input
+                type="radio"
+                name="gender"
+                value="male"
+                required
+                onChange={() => clearError('gender')}
+              />
               Male
             </label>
             <label>
-              <input type="radio" name="gender" value="female" />
+              <input
+                type="radio"
+                name="gender"
+                value="female"
+                onChange={() => clearError('gender')}
+              />
               Female
             </label>
             <label>
-              <input type="radio" name="gender" value="other" />
+              <input
+                type="radio"
+                name="gender"
+                value="other"
+                onChange={() => clearError('gender')}
+              />
               Other
             </label>
           </div>
+          {formErrors.gender && (
+            <span className={styles.errorMessage}>{formErrors.gender}</span>
+          )}
         </div>
 
         <div className={styles.formGroup}>
           <label className={styles.checkboxLabel}>
-            <input type="checkbox" name="acceptTerms" />I accept Terms and
-            Conditions
+            <input type="checkbox" name="acceptTerms" required />I accept Terms
+            and Conditions
           </label>
         </div>
 
@@ -111,19 +276,35 @@ const UncontrolledForm = ({ onClose }: UncontrolledFormProps) => {
             id="picture"
             name="picture"
             accept=".png,.jpg,.jpeg"
+            onChange={handleFileChange}
           />
-          <p className={styles.fileHint}>Supported formats: PNG, JPEG, JPG</p>
+          <p className={styles.fileHint}>
+            {selectedFileName || 'Supported formats: PNG, JPEG, JPG'}
+          </p>
+          {formErrors.picture && (
+            <span className={styles.errorMessage}>{formErrors.picture}</span>
+          )}
         </div>
 
         <div className={styles.formGroup}>
           <label htmlFor="country">Country:</label>
-          <select id="country" name="country" required>
+          <select
+            id="country"
+            name="country"
+            required
+            onChange={() => clearError('country')}
+            className={formErrors.country ? styles.error : ''}
+          >
             <option value="">Select country</option>
-            <option value="usa">United States</option>
-            <option value="uk">United Kingdom</option>
-            <option value="germany">Germany</option>
-            <option value="france">France</option>
+            {countries.map(country => (
+              <option key={country} value={country}>
+                {country}
+              </option>
+            ))}
           </select>
+          {formErrors.country && (
+            <span className={styles.errorMessage}>{formErrors.country}</span>
+          )}
         </div>
 
         <div className={styles.buttonGroup}>

@@ -90,3 +90,15 @@
 .cancelButton:hover {
   background-color: #545b62;
 }
+
+.disabled {
+  background-color: #808080;
+  color: #585353;
+  cursor: default;
+}
+
+.disabled:hover {
+  background-color: #808080;
+  color: #585353;
+  cursor: default;
+}

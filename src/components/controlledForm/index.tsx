@@ -1,13 +1,17 @@
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
+import { useAppDispatch, useAppSelector } from '@/hooks/redux';
+import { addFormSubmission } from '@/store/formSlice';
 import styles from '@components/uncontrolledForm/form.module.css';
 import classNames from 'classnames';
+import { convertToBase64 } from '@/utils/convertToBase64';
+import type { MyFormData } from '@/types/types';
+import { isGenderResult, isGender } from '@/utils/valid';
 
 interface ControlledFormProps {
   onClose: () => void;
 }
-
-interface FormData {
+interface FormInputs {
   name: string;
   age: string;
   email: string;
@@ -20,14 +24,17 @@ interface FormData {
 }
 
 const ControlledForm = ({ onClose }: ControlledFormProps) => {
+  const dispatch = useAppDispatch();
+  const { countries } = useAppSelector(state => state.forms);
+
   const {
     register,
     handleSubmit,
     watch,
-    formState: { errors },
+    formState: { errors, isValid },
     setError,
     clearErrors,
-  } = useForm<FormData>({
+  } = useForm<FormInputs>({
     mode: 'onChange',
     defaultValues: {
       acceptTerms: false,
@@ -36,8 +43,30 @@ const ControlledForm = ({ onClose }: ControlledFormProps) => {
 
   const [passwordStrength, setPasswordStrength] = useState('');
 
-  const onSubmit = (data: FormData) => {
-    console.log('Form data:', data);
+  const onSubmit = async (data: FormInputs) => {
+    if (!isGender(data.gender)) {
+      setError('gender', { message: 'Invalid gender value' });
+      return;
+    }
+
+    let pictureBase64 = null;
+    if (data.picture && data.picture.length > 0) {
+      pictureBase64 = await convertToBase64(data.picture[0]);
+    }
+
+    const submissionData: MyFormData = {
+      type: 'controlled',
+      name: data.name,
+      age: Number.parseInt(data.age),
+      email: data.email,
+      gender: isGenderResult(data.gender),
+      acceptTerms: data.acceptTerms,
+      pictureBase64,
+      country: data.country,
+      password: data.password,
+    };
+
+    dispatch(addFormSubmission(submissionData));
     onClose();
   };
 
@@ -157,6 +186,10 @@ const ControlledForm = ({ onClose }: ControlledFormProps) => {
             id="password"
             {...register('password', {
               required: 'Password is required',
+              minLength: {
+                value: 8,
+                message: 'Password must be at least 8 characters',
+              },
               onChange: handlePasswordChange,
             })}
             className={errors.password ? styles.error : ''}
@@ -259,10 +292,11 @@ const ControlledForm = ({ onClose }: ControlledFormProps) => {
             className={errors.country ? styles.error : ''}
           >
             <option value="">Select country</option>
-            <option value="usa">United States</option>
-            <option value="uk">United Kingdom</option>
-            <option value="germany">Germany</option>
-            <option value="france">France</option>
+            {countries.map(country => (
+              <option key={country} value={country}>
+                {country}
+              </option>
+            ))}
           </select>
           {errors.country && (
             <span className={styles.errorMessage}>
@@ -274,7 +308,10 @@ const ControlledForm = ({ onClose }: ControlledFormProps) => {
         <div className={styles.buttonGroup}>
           <button
             type="submit"
-            className={classNames(styles.formButton, styles.submitButton)}
+            disabled={!isValid}
+            className={classNames(styles.formButton, styles.submitButton, {
+              [styles.disabled]: !isValid,
+            })}
           >
             Submit
           </button>
