@@ -1,7 +1,7 @@
 import type { MyFormData } from '@/types/types';
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
-interface SubmissionsFormData extends MyFormData {
+export interface SubmissionsFormData extends MyFormData {
   id: string;
   submittedAt: string;
 }
