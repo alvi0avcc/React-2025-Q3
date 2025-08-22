@@ -25,9 +25,9 @@ const HomePage = () => {
         onClose={() => setIsModalOpen('close')}
       >
         {isModalOpen === 'uncontrolled' ? (
-          <UncontrolledForm />
+          <UncontrolledForm onClose={() => setIsModalOpen('close')} />
         ) : (
-          <ControlledForm />
+          <ControlledForm onClose={() => setIsModalOpen('close')} />
         )}
       </Modal>
     </div>

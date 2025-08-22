@@ -13,11 +13,6 @@ function Modal({ isOpen, onClose, children }: ModalProps) {
   const modalRoot = document.getElementById('modal-root');
 
   const handleOverlayClick = (e: React.MouseEvent) => {
-    console.log('click');
-    console.log(e.target);
-    console.log(e.currentTarget);
-    console.log(e.target === e.currentTarget);
-
     if (e.target === e.currentTarget) onClose();
   };
 
