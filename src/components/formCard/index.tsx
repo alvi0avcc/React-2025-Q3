@@ -4,15 +4,12 @@ import classNames from 'classnames';
 
 interface FormCardProps {
   data: SubmissionsFormData;
-  id: number;
+  index: number;
 }
 
-const FormCard = ({ data, id }: FormCardProps) => {
+const FormCard = ({ data, index }: FormCardProps) => {
   return (
-    <div
-      key={id}
-      className={classNames(styles.card, id === 0 && styles.newCard)}
-    >
+    <div className={classNames(styles.card, index === 0 && styles.newCard)}>
       <h3 className={styles.cardTitle}>{data.type.toUpperCase()} Form</h3>
 
       <div className={styles.content}>

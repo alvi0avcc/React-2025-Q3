@@ -16,7 +16,7 @@ const HomePage = () => {
     <div id="homePage">
       <h1>React Forms</h1>
 
-      <button onClick={() => setIsModalOpen('uncontrolled')}>
+      <button autoFocus onClick={() => setIsModalOpen('uncontrolled')}>
         Open Uncontrolled Form
       </button>
 
@@ -40,7 +40,7 @@ const HomePage = () => {
           .slice()
           .reverse()
           .map((submission, index) => (
-            <FormCard id={index} data={submission} />
+            <FormCard key={submission.id} index={index} data={submission} />
           ))}
       </div>
     </div>

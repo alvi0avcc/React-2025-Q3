@@ -6,11 +6,11 @@ import classNames from 'classnames';
 import { convertToBase64 } from '@/utils/convertToBase64';
 import type { MyFormData } from '@/types/types';
 import {
-  isGenderResult,
-  isFileResult,
-  isGender,
-  isString,
-} from '@/utils/valid';
+  validateFormData,
+  validateFile,
+  type FormSchemaType,
+} from '@/schemas/formSchema';
+import { isString, isGenderResult, isFileResult } from '@/utils/valid';
 
 interface UncontrolledFormProps {
   onClose: () => void;
@@ -24,68 +24,43 @@ const UncontrolledForm = ({ onClose }: UncontrolledFormProps) => {
   const [selectedFileName, setSelectedFileName] = useState('');
   const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
 
-  const validateForm = (formData: MyFormData): boolean => {
-    const errors: { [key: string]: string } = {};
-
-    if (!formData.name.trim()) {
-      errors.name = 'Name is required';
-    } else if (!/^[A-Z]/.test(formData.name)) {
-      errors.name = 'Name must start with capital letter';
-    }
-
-    if (formData.age < 0 || Number.isNaN(formData.age)) {
-      errors.age = 'Age cannot be negative';
-    }
-
-    if (!formData.email) {
-      errors.email = 'Email is required';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      errors.email = 'Invalid email address';
-    }
-
-    if (!isGender(formData.gender)) {
-      errors.gender = 'Invalid gender value';
-    }
-
-    if (!formData.country) {
-      errors.country = 'Country is required';
-    }
-
-    if (!formData.password) {
-      errors.password = 'Password is required';
-    } else if (formData.password.length < 8) {
-      errors.password = 'Password must be at least 8 characters';
-    }
-
-    setFormErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
-
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!formRef.current) return;
 
     const formData = new FormData(formRef.current);
-    const pictureFile = isFileResult(formData.get('picture'));
 
-    let pictureBase64 = null;
-    if (pictureFile && pictureFile.size > 0) {
-      pictureBase64 = await convertToBase64(pictureFile);
-    }
-
-    const rawData = {
+    const rawData: FormSchemaType = {
       name: isString(formData.get('name')),
-      age: Number.parseInt(isString(formData.get('age'))),
+      age: Number.parseInt(isString(formData.get('age')) || '0', 10),
       email: isString(formData.get('email')),
       password: isString(formData.get('password')),
+      confirmPassword: isString(formData.get('confirmPassword')),
       gender: isGenderResult(formData.get('gender')),
       acceptTerms: formData.get('acceptTerms') === 'on',
       country: isString(formData.get('country')),
+      picture: isFileResult(formData.get('picture')) || undefined,
     };
 
-    if (!isGender(rawData.gender)) {
-      setFormErrors({ gender: 'Invalid gender value' });
+    const validationResult = validateFormData(rawData);
+
+    if (!validationResult.success) {
+      const errors: { [key: string]: string } = {};
+      validationResult.error.issues.forEach(error => {
+        const fieldName = error.path[0];
+        if (typeof fieldName === 'string') {
+          errors[fieldName] = error.message;
+        }
+      });
+      setFormErrors(errors);
       return;
+    }
+
+    setFormErrors({});
+
+    let pictureBase64 = null;
+    if (rawData.picture && rawData.picture.size > 0) {
+      pictureBase64 = await convertToBase64(rawData.picture);
     }
 
     const submissionData: MyFormData = {
@@ -93,16 +68,12 @@ const UncontrolledForm = ({ onClose }: UncontrolledFormProps) => {
       name: rawData.name,
       age: rawData.age,
       email: rawData.email,
-      gender: isGenderResult(rawData.gender),
+      gender: rawData.gender,
       acceptTerms: rawData.acceptTerms,
       pictureBase64,
       country: rawData.country,
       password: rawData.password,
     };
-
-    if (!validateForm(submissionData)) {
-      return;
-    }
 
     dispatch(addFormSubmission(submissionData));
     onClose();
@@ -124,13 +95,10 @@ const UncontrolledForm = ({ onClose }: UncontrolledFormProps) => {
     setSelectedFileName(file ? file.name : '');
 
     if (file) {
-      const validTypes = ['image/png', 'image/jpeg', 'image/jpg'];
-      const maxSize5MB = 5 * 1024 * 1024;
+      const validationResult = validateFile(file);
 
-      if (!validTypes.includes(file.type)) {
-        setFormErrors({ picture: 'Only PNG and JPEG files are allowed' });
-      } else if (file.size > maxSize5MB) {
-        setFormErrors({ picture: 'File size must be less than 5MB' });
+      if (!validationResult.success) {
+        setFormErrors({ picture: validationResult.error.issues[0].message });
       } else {
         setFormErrors(prev => ({ ...prev, picture: '' }));
       }
@@ -153,6 +121,7 @@ const UncontrolledForm = ({ onClose }: UncontrolledFormProps) => {
             id="name"
             name="name"
             required
+            autoFocus
             onChange={() => clearError('name')}
             className={formErrors.name ? styles.error : ''}
           />
@@ -222,7 +191,14 @@ const UncontrolledForm = ({ onClose }: UncontrolledFormProps) => {
             id="confirmPassword"
             name="confirmPassword"
             required
+            onChange={() => clearError('confirmPassword')}
+            className={formErrors.confirmPassword ? styles.error : ''}
           />
+          {formErrors.confirmPassword && (
+            <span className={styles.errorMessage}>
+              {formErrors.confirmPassword}
+            </span>
+          )}
         </div>
 
         <div className={styles.formGroup}>

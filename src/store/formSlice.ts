@@ -2,7 +2,7 @@ import type { MyFormData } from '@/types/types';
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
 export interface SubmissionsFormData extends MyFormData {
-  id: string;
+  id: number;
   submittedAt: string;
 }
 
@@ -41,7 +41,7 @@ const formSlice = createSlice({
     ) => {
       const newSubmission: SubmissionsFormData = {
         ...action.payload,
-        id: Date.now().toString(),
+        id: Date.now(),
         submittedAt: new Date().toISOString(),
       };
       state.submissions.push(newSubmission);

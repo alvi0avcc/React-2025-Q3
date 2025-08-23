@@ -133,6 +133,7 @@ const ControlledForm = ({ onClose }: ControlledFormProps) => {
           <input
             type="text"
             id="name"
+            autoFocus
             {...register('name', {
               required: 'Name is required',
               validate: validateName,
