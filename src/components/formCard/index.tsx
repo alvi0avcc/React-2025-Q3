@@ -1,7 +1,6 @@
-import type { SubmissionsFormData } from '@/store/formSlice';
 import styles from './formCard.module.css';
+import type { SubmissionsFormData } from '@/store/formSlice';
 import classNames from 'classnames';
-import { useEffect, useState } from 'react';
 
 interface FormCardProps {
   data: SubmissionsFormData;
@@ -9,22 +8,11 @@ interface FormCardProps {
 }
 
 const FormCard = ({ data, id }: FormCardProps) => {
-  const [isNew, setIsNew] = useState(false);
-
-  useEffect(() => {
-    if (id === 0) {
-      setIsNew(true);
-
-      const timer = setTimeout(() => {
-        setIsNew(false);
-      }, 3000);
-
-      return () => clearTimeout(timer);
-    }
-  }, []);
-
   return (
-    <div key={id} className={classNames(styles.card, isNew && styles.newCard)}>
+    <div
+      key={id}
+      className={classNames(styles.card, id === 0 && styles.newCard)}
+    >
       <h3 className={styles.cardTitle}>{data.type.toUpperCase()} Form</h3>
 
       <div className={styles.content}>
@@ -42,7 +30,6 @@ const FormCard = ({ data, id }: FormCardProps) => {
             </span>
           </div>
         ))}
-        ;
         {data.pictureBase64 && (
           <div className={styles.pictureSection}>
             <img

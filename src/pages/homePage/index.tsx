@@ -1,3 +1,4 @@
+import styles from './homePage.module.css';
 import { useState } from 'react';
 import Modal from '@components/modal';
 import ControlledForm from '@components/controlledForm';
@@ -34,7 +35,7 @@ const HomePage = () => {
         )}
       </Modal>
 
-      <div>
+      <div className={styles.cards}>
         {submissions
           .slice()
           .reverse()
