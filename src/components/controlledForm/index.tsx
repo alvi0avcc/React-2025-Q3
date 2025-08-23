@@ -5,21 +5,24 @@ import { addFormSubmission } from '@/store/formSlice';
 import styles from '@components/uncontrolledForm/form.module.css';
 import classNames from 'classnames';
 import { convertToBase64 } from '@/utils/convertToBase64';
-import type { MyFormData } from '@/types/types';
-import { isGenderResult, isGender } from '@/utils/valid';
+import type { Gender, MyFormData } from '@/types/types';
+import { isGenderResult } from '@/utils/valid';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { formSchema } from '@/schemas/formSchema';
 
 interface ControlledFormProps {
   onClose: () => void;
 }
+
 interface FormInputs {
   name: string;
-  age: string;
+  age: number;
   email: string;
   password: string;
   confirmPassword: string;
-  gender: string;
+  gender: Gender;
   acceptTerms: boolean;
-  picture: FileList;
+  picture?: File;
   country: string;
 }
 
@@ -30,34 +33,31 @@ const ControlledForm = ({ onClose }: ControlledFormProps) => {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors, isValid },
-    setError,
-    clearErrors,
+    trigger,
+    setValue,
+    watch,
   } = useForm<FormInputs>({
     mode: 'onChange',
+    resolver: zodResolver(formSchema),
     defaultValues: {
       acceptTerms: false,
     },
   });
 
   const [passwordStrength, setPasswordStrength] = useState('');
+  const pictureValue = watch('picture');
 
   const onSubmit = async (data: FormInputs) => {
-    if (!isGender(data.gender)) {
-      setError('gender', { message: 'Invalid gender value' });
-      return;
-    }
-
     let pictureBase64 = null;
-    if (data.picture && data.picture.length > 0) {
-      pictureBase64 = await convertToBase64(data.picture[0]);
+    if (data.picture) {
+      pictureBase64 = await convertToBase64(data.picture);
     }
 
     const submissionData: MyFormData = {
       type: 'controlled',
       name: data.name,
-      age: Number.parseInt(data.age),
+      age: data.age,
       email: data.email,
       gender: isGenderResult(data.gender),
       acceptTerms: data.acceptTerms,
@@ -80,47 +80,17 @@ const ControlledForm = ({ onClose }: ControlledFormProps) => {
 
     setPasswordStrength(strength || 'Weak password');
 
-    const confirmPassword = watch('confirmPassword');
-    if (confirmPassword && confirmPassword !== password) {
-      setError('confirmPassword', {
-        type: 'manual',
-        message: 'Passwords do not match',
-      });
+    void trigger('confirmPassword');
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setValue('picture', file);
+      void trigger('picture');
     } else {
-      clearErrors('confirmPassword');
+      setValue('picture', undefined);
     }
-  };
-
-  const validatePasswordMatch = (value: string) => {
-    const password = watch('password');
-    return value === password || 'Passwords do not match';
-  };
-
-  const validateName = (value: string) => {
-    return /^[A-Z]/.test(value) || 'Name must start with capital letter';
-  };
-
-  const validateAge = (value: string) => {
-    const age = Number.parseInt(value);
-    return (age >= 0 && !Number.isNaN(age)) || 'Age cannot be negative';
-  };
-
-  const validateFile = (files: FileList) => {
-    if (files.length === 0) return 'Picture is required';
-
-    const file = files[0];
-    const validTypes = ['image/png', 'image/jpeg', 'image/jpg'];
-    const maxSize5MB = 5 * 1024 * 1024;
-
-    if (!validTypes.includes(file.type)) {
-      return 'Only PNG and JPEG files are allowed';
-    }
-
-    if (file.size > maxSize5MB) {
-      return 'File size must be less than 5MB';
-    }
-
-    return true;
   };
 
   return (
@@ -134,14 +104,13 @@ const ControlledForm = ({ onClose }: ControlledFormProps) => {
             type="text"
             id="name"
             autoFocus
-            {...register('name', {
-              required: 'Name is required',
-              validate: validateName,
-            })}
+            {...register('name')}
             className={errors.name ? styles.error : ''}
           />
           {errors.name && (
-            <span className={styles.errorMessage}>{errors.name.message}</span>
+            <span className={styles.errorMessage}>
+              {String(errors.name.message)}
+            </span>
           )}
         </div>
 
@@ -150,14 +119,13 @@ const ControlledForm = ({ onClose }: ControlledFormProps) => {
           <input
             type="number"
             id="age"
-            {...register('age', {
-              required: 'Age is required',
-              validate: validateAge,
-            })}
+            {...register('age', { valueAsNumber: true })}
             className={errors.age ? styles.error : ''}
           />
           {errors.age && (
-            <span className={styles.errorMessage}>{errors.age.message}</span>
+            <span className={styles.errorMessage}>
+              {String(errors.age.message)}
+            </span>
           )}
         </div>
 
@@ -166,17 +134,13 @@ const ControlledForm = ({ onClose }: ControlledFormProps) => {
           <input
             type="email"
             id="email"
-            {...register('email', {
-              required: 'Email is required',
-              pattern: {
-                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                message: 'Invalid email address',
-              },
-            })}
+            {...register('email')}
             className={errors.email ? styles.error : ''}
           />
           {errors.email && (
-            <span className={styles.errorMessage}>{errors.email.message}</span>
+            <span className={styles.errorMessage}>
+              {String(errors.email.message)}
+            </span>
           )}
         </div>
 
@@ -185,14 +149,8 @@ const ControlledForm = ({ onClose }: ControlledFormProps) => {
           <input
             type="password"
             id="password"
-            {...register('password', {
-              required: 'Password is required',
-              minLength: {
-                value: 8,
-                message: 'Password must be at least 8 characters',
-              },
-              onChange: handlePasswordChange,
-            })}
+            {...register('password')}
+            onChange={handlePasswordChange}
             className={errors.password ? styles.error : ''}
           />
           {passwordStrength && (
@@ -202,7 +160,7 @@ const ControlledForm = ({ onClose }: ControlledFormProps) => {
           )}
           {errors.password && (
             <span className={styles.errorMessage}>
-              {errors.password.message}
+              {String(errors.password.message)}
             </span>
           )}
         </div>
@@ -212,15 +170,12 @@ const ControlledForm = ({ onClose }: ControlledFormProps) => {
           <input
             type="password"
             id="confirmPassword"
-            {...register('confirmPassword', {
-              required: 'Please confirm your password',
-              validate: validatePasswordMatch,
-            })}
+            {...register('confirmPassword')}
             className={errors.confirmPassword ? styles.error : ''}
           />
           {errors.confirmPassword && (
             <span className={styles.errorMessage}>
-              {errors.confirmPassword.message}
+              {String(errors.confirmPassword.message)}
             </span>
           )}
         </div>
@@ -229,11 +184,7 @@ const ControlledForm = ({ onClose }: ControlledFormProps) => {
           <label>Gender:</label>
           <div className={styles.radioGroup}>
             <label>
-              <input
-                type="radio"
-                value="male"
-                {...register('gender', { required: 'Gender is required' })}
-              />
+              <input type="radio" value="male" {...register('gender')} />
               Male
             </label>
             <label>
@@ -246,23 +197,20 @@ const ControlledForm = ({ onClose }: ControlledFormProps) => {
             </label>
           </div>
           {errors.gender && (
-            <span className={styles.errorMessage}>{errors.gender.message}</span>
+            <span className={styles.errorMessage}>
+              {String(errors.gender.message)}
+            </span>
           )}
         </div>
 
         <div className={styles.formGroup}>
           <label className={styles.checkboxLabel}>
-            <input
-              type="checkbox"
-              {...register('acceptTerms', {
-                required: 'You must accept terms and conditions',
-              })}
-            />
-            I accept Terms and Conditions
+            <input type="checkbox" {...register('acceptTerms')} />I accept Terms
+            and Conditions
           </label>
           {errors.acceptTerms && (
             <span className={styles.errorMessage}>
-              {errors.acceptTerms.message}
+              {String(errors.acceptTerms.message)}
             </span>
           )}
         </div>
@@ -273,14 +221,18 @@ const ControlledForm = ({ onClose }: ControlledFormProps) => {
             type="file"
             id="picture"
             accept=".png,.jpg,.jpeg"
-            {...register('picture', {
-              validate: validateFile,
-            })}
+            onChange={handleFileChange}
           />
           <p className={styles.fileHint}>Supported formats: PNG, JPEG, JPG</p>
+          {pictureValue && (
+            <div className={styles.fileInfo}>
+              Selected: {pictureValue.name} (
+              {Math.round(pictureValue.size / 1024)} KB)
+            </div>
+          )}
           {errors.picture && (
             <span className={styles.errorMessage}>
-              {errors.picture.message}
+              {String(errors.picture.message)}
             </span>
           )}
         </div>
@@ -289,7 +241,7 @@ const ControlledForm = ({ onClose }: ControlledFormProps) => {
           <label htmlFor="country">Country:</label>
           <select
             id="country"
-            {...register('country', { required: 'Country is required' })}
+            {...register('country')}
             className={errors.country ? styles.error : ''}
           >
             <option value="">Select country</option>
@@ -301,7 +253,7 @@ const ControlledForm = ({ onClose }: ControlledFormProps) => {
           </select>
           {errors.country && (
             <span className={styles.errorMessage}>
-              {errors.country.message}
+              {String(errors.country.message)}
             </span>
           )}
         </div>
