@@ -103,6 +103,7 @@ const ControlledForm = ({ onClose }: ControlledFormProps) => {
           <input
             type="text"
             id="name"
+            autoComplete="given-name"
             autoFocus
             {...register('name')}
             className={errors.name ? styles.error : ''}
@@ -119,6 +120,7 @@ const ControlledForm = ({ onClose }: ControlledFormProps) => {
           <input
             type="number"
             id="age"
+            autoComplete="on"
             {...register('age', { valueAsNumber: true })}
             className={errors.age ? styles.error : ''}
           />
@@ -134,6 +136,7 @@ const ControlledForm = ({ onClose }: ControlledFormProps) => {
           <input
             type="email"
             id="email"
+            autoComplete="email"
             {...register('email')}
             className={errors.email ? styles.error : ''}
           />
@@ -149,6 +152,7 @@ const ControlledForm = ({ onClose }: ControlledFormProps) => {
           <input
             type="password"
             id="password"
+            autoComplete="new-password"
             {...register('password')}
             onChange={handlePasswordChange}
             className={errors.password ? styles.error : ''}
@@ -170,6 +174,7 @@ const ControlledForm = ({ onClose }: ControlledFormProps) => {
           <input
             type="password"
             id="confirmPassword"
+            autoComplete="new-password"
             {...register('confirmPassword')}
             className={errors.confirmPassword ? styles.error : ''}
           />
@@ -241,6 +246,7 @@ const ControlledForm = ({ onClose }: ControlledFormProps) => {
           <label htmlFor="country">Country:</label>
           <select
             id="country"
+            autoComplete="country"
             {...register('country')}
             className={errors.country ? styles.error : ''}
           >

@@ -120,6 +120,7 @@ const UncontrolledForm = ({ onClose }: UncontrolledFormProps) => {
             type="text"
             id="name"
             name="name"
+            autoComplete="given-name"
             required
             autoFocus
             onChange={() => clearError('name')}
@@ -136,6 +137,7 @@ const UncontrolledForm = ({ onClose }: UncontrolledFormProps) => {
             type="number"
             id="age"
             name="age"
+            autoComplete="on"
             min="0"
             required
             onChange={() => clearError('age')}
@@ -152,6 +154,7 @@ const UncontrolledForm = ({ onClose }: UncontrolledFormProps) => {
             type="email"
             id="email"
             name="email"
+            autoComplete="email"
             required
             onChange={() => clearError('email')}
             className={formErrors.email ? styles.error : ''}
@@ -167,6 +170,7 @@ const UncontrolledForm = ({ onClose }: UncontrolledFormProps) => {
             type="password"
             id="password"
             name="password"
+            autoComplete="new-password"
             onChange={e => {
               handlePasswordChange(e);
               clearError('password');
@@ -190,6 +194,7 @@ const UncontrolledForm = ({ onClose }: UncontrolledFormProps) => {
             type="password"
             id="confirmPassword"
             name="confirmPassword"
+            autoComplete="new-password"
             required
             onChange={() => clearError('confirmPassword')}
             className={formErrors.confirmPassword ? styles.error : ''}
@@ -267,6 +272,7 @@ const UncontrolledForm = ({ onClose }: UncontrolledFormProps) => {
           <select
             id="country"
             name="country"
+            autoComplete="country"
             required
             onChange={() => clearError('country')}
             className={formErrors.country ? styles.error : ''}
