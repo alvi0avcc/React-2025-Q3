@@ -25,3 +25,6 @@ coverage
 *.sw?
 
 *.tsbuildinfo
+*.idea
+
+owid-co2-data.json

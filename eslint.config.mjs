@@ -59,7 +59,10 @@ export default tseslint
         ],
         '@typescript-eslint/consistent-type-assertions': [
           'error',
-          { assertionStyle: 'never' },
+          {
+            assertionStyle: 'as',
+            objectLiteralTypeAssertions: 'allow',
+          },
         ],
         '@typescript-eslint/no-unsafe-assignment': 'off',
         '@typescript-eslint/no-unsafe-call': 'off',
@@ -81,6 +84,7 @@ export default tseslint
             ignoreIIFE: true,
           },
         ],
+        '@typescript-eslint/only-throw-error': 'off',
         'unicorn/consistent-function-scoping': [
           'warn',
           {
