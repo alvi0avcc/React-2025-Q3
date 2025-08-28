@@ -1,17 +1,21 @@
 import { fetchData } from '@/utils/dataResource';
+import { CountriesList } from '@components/countriesList';
 
 export function DataContent() {
-  const data = fetchData();
+  const result = fetchData();
 
   return (
     <div>
-      <h1>All CO2 Emissions Data </h1>
-      {data.data &&
-        Object.keys(data.data).map(key => (
-          <div key={key} className="data-item">
-            <strong>{key}:</strong>
-          </div>
-        ))}
+      <h1>All CO2 Emissions Data</h1>
+      <p>
+        Source: {result.source} | URL: {result.url}
+      </p>
+
+      {result.data ? (
+        <CountriesList data={result.data} />
+      ) : (
+        <p>No data available</p>
+      )}
     </div>
   );
 }

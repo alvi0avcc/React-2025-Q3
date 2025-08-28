@@ -1,0 +1,28 @@
+.countrySelectTableContainer {
+  border: 1px solid #ddd;
+  width: 100%;
+}
+
+.countrySelectTable {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.countrySelectHeader {
+  padding: 5px;
+  background-color: #4b4b4b;
+  text-align: center;
+}
+
+.countryScrollTable {
+  height: 200px;
+  overflow-y: auto;
+}
+
+.countryLine {
+  cursor: pointer;
+}
+
+.countryLine:hover {
+  background-color: #808080;
+}
