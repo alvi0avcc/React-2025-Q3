@@ -1,31 +1,58 @@
-import type { CountryList } from '@/types';
+import { useMemo, useState, useCallback } from 'react';
+import type { CountrySelectProps } from '@/types';
 import styles from './countrySelect.module.css';
-import { getLatestPopulation } from '@/utils/getLatestPopulation';
-import { useMemo } from 'react';
-
-interface PopulationCellProps {
-  data: CountryList;
-  countryKey: string;
-}
-
-const PopulationCell = ({ data, countryKey }: PopulationCellProps) => {
-  const population = useMemo(
-    () => getLatestPopulation(data, countryKey),
-    [data, countryKey]
-  );
-
-  return <>{population ?? 'N/A'}</>;
-};
-
-interface CountrySelectProps {
-  data: CountryList;
-  onCountryChange: (countryKey: string) => void;
-}
+import { getCountryRegion, isRegion } from '@/utils/countryRegions';
+import { useComputations } from '@/hooks/useComputations';
+import { RegionFilter } from '@components/regionFilter';
+import { CountriesTable } from '@components/countriesTable';
 
 export function CountrySelect({ data, onCountryChange }: CountrySelectProps) {
+  const [selectedRegion, setSelectedRegion] = useState<string>('All');
+
+  const handleRegionChange = useCallback((region: string) => {
+    setSelectedRegion(region);
+  }, []);
+
+  const { getOrCompute: getCachedRegion } = useComputations<string>();
+  const { getOrCompute: getCachedIsRegion } = useComputations<boolean>();
+
+  const cachedIsRegion = useCallback(
+    (countryName: string) => {
+      return getCachedIsRegion(`isRegion-${countryName}`, () =>
+        isRegion(countryName)
+      );
+    },
+    [getCachedIsRegion]
+  );
+
+  const cachedGetCountryRegion = useCallback(
+    (countryName: string, isoCode?: string) => {
+      return getCachedRegion(`region-${countryName}-${isoCode}`, () =>
+        getCountryRegion(countryName, isoCode)
+      );
+    },
+    [getCachedRegion]
+  );
+
+  const filteredCountryKeys = useMemo(() => {
+    return Object.entries(data)
+      .filter(([countryName, countryEntry]) => {
+        if (cachedIsRegion(countryName)) return false;
+        if (selectedRegion === 'All') return true;
+        const region = cachedGetCountryRegion(
+          countryName,
+          countryEntry.iso_code
+        );
+        return region === selectedRegion;
+      })
+      .map(([countryKey]) => countryKey);
+  }, [data, selectedRegion, cachedIsRegion, cachedGetCountryRegion]);
+
   return (
     <div className={styles.countrySelectTableContainer}>
-      <table className={styles.countrySelectTable}>
+      <RegionFilter onRegionChange={handleRegionChange} />
+
+      <table className={styles.countryHeaderTable}>
         <thead>
           <tr>
             <th className={styles.countrySelectHeader}>Country Name</th>
@@ -35,33 +62,11 @@ export function CountrySelect({ data, onCountryChange }: CountrySelectProps) {
         </thead>
       </table>
 
-      <div className={styles.countryScrollTable}>
-        <table className={styles.countrySelectTable}>
-          <tbody>
-            {Object.entries(data).map(([countryKey, countryEntry]) => (
-              <tr
-                key={countryKey}
-                className={styles.countryLine}
-                onClick={() => onCountryChange(countryKey)}
-              >
-                <th className={styles.countryCell}>{countryKey}</th>
-                <th className={styles.countryCell}>
-                  <PopulationCell data={data} countryKey={countryKey} />
-                </th>
-                <th className={styles.countryCell}>
-                  {countryEntry.iso_code ? (
-                    <span className={styles.isoCode}>
-                      {countryEntry.iso_code}
-                    </span>
-                  ) : (
-                    'N/A'
-                  )}
-                </th>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <CountriesTable
+        data={data}
+        filteredCountryKeys={filteredCountryKeys}
+        onCountryChange={onCountryChange}
+      />
     </div>
   );
 }

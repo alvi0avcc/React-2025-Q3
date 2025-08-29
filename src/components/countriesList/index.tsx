@@ -7,7 +7,7 @@ interface CountriesListProps {
   data: CountryList;
 }
 
-export function CountriesList({ data }: CountriesListProps) {
+export const CountriesList = ({ data }: CountriesListProps) => {
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
 
   const handleCountryChange = (countryKey: string) => {
@@ -23,4 +23,4 @@ export function CountriesList({ data }: CountriesListProps) {
       <CountryDetail countryKey={selectedCountry} data={data} />
     </div>
   );
-}
+};

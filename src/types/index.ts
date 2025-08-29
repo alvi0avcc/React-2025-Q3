@@ -20,3 +20,17 @@ export type FetchResponse = {
   source: SourceData;
   url: string;
 };
+
+export type CountryDataProps = {
+  data: CountryList;
+  countryKey: string;
+};
+
+export type CountrySelectProps = {
+  data: CountryList;
+  onCountryChange: (countryKey: string) => void;
+};
+
+export type RegionFilterProps = {
+  onRegionChange: (region: string) => void;
+};
