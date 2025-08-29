@@ -3,8 +3,16 @@ export type SourceData = 'local' | 'remote';
 export type CountryList = Record<string, CountryEntry>;
 
 export type CountryEntry = {
-  data: unknown[];
+  data: DataEntry[];
   iso_code?: string;
+};
+
+export type DataEntry = {
+  year?: number;
+  population?: number;
+  cement_co2?: number;
+  cement_co2_per_capita?: number;
+  cumulative_cement_co2?: number;
 };
 
 export type FetchResponse = {

@@ -1,5 +1,21 @@
 import type { CountryList } from '@/types';
 import styles from './countrySelect.module.css';
+import { getLatestPopulation } from '@/utils/getLatestPopulation';
+import { useMemo } from 'react';
+
+interface PopulationCellProps {
+  data: CountryList;
+  countryKey: string;
+}
+
+const PopulationCell = ({ data, countryKey }: PopulationCellProps) => {
+  const population = useMemo(
+    () => getLatestPopulation(data, countryKey),
+    [data, countryKey]
+  );
+
+  return <>{population ?? 'N/A'}</>;
+};
 
 interface CountrySelectProps {
   data: CountryList;
@@ -29,7 +45,9 @@ export function CountrySelect({ data, onCountryChange }: CountrySelectProps) {
                 onClick={() => onCountryChange(countryKey)}
               >
                 <th className={styles.countryCell}>{countryKey}</th>
-                <th className={styles.countryCell}>xxx</th>
+                <th className={styles.countryCell}>
+                  <PopulationCell data={data} countryKey={countryKey} />
+                </th>
                 <th className={styles.countryCell}>
                   {countryEntry.iso_code ? (
                     <span className={styles.isoCode}>
