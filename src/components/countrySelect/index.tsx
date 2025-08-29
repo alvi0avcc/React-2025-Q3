@@ -5,12 +5,18 @@ import { getCountryRegion, isRegion } from '@/utils/countryRegions';
 import { useComputations } from '@/hooks/useComputations';
 import { RegionFilter } from '@components/regionFilter';
 import { CountriesTable } from '@components/countriesTable';
+import { SearchBar } from '@components/searchBar';
 
 export function CountrySelect({ data, onCountryChange }: CountrySelectProps) {
   const [selectedRegion, setSelectedRegion] = useState<string>('All');
+  const [searchTerm, setSearchTerm] = useState<string>('');
 
   const handleRegionChange = useCallback((region: string) => {
     setSelectedRegion(region);
+  }, []);
+
+  const handleSearchChange = useCallback((term: string) => {
+    setSearchTerm(term.toLowerCase());
   }, []);
 
   const { getOrCompute: getCachedRegion } = useComputations<string>();
@@ -38,19 +44,36 @@ export function CountrySelect({ data, onCountryChange }: CountrySelectProps) {
     return Object.entries(data)
       .filter(([countryName, countryEntry]) => {
         if (cachedIsRegion(countryName)) return false;
-        if (selectedRegion === 'All') return true;
-        const region = cachedGetCountryRegion(
-          countryName,
-          countryEntry.iso_code
-        );
-        return region === selectedRegion;
+
+        if (selectedRegion !== 'All') {
+          const region = cachedGetCountryRegion(
+            countryName,
+            countryEntry.iso_code
+          );
+          if (region !== selectedRegion) return false;
+        }
+
+        if (searchTerm) {
+          return countryName.toLowerCase().includes(searchTerm);
+        }
+
+        return true;
       })
       .map(([countryKey]) => countryKey);
-  }, [data, selectedRegion, cachedIsRegion, cachedGetCountryRegion]);
+  }, [
+    data,
+    selectedRegion,
+    searchTerm,
+    cachedIsRegion,
+    cachedGetCountryRegion,
+  ]);
 
   return (
     <div className={styles.countrySelectTableContainer}>
-      <RegionFilter onRegionChange={handleRegionChange} />
+      <div className={styles.filtersContainer}>
+        <SearchBar onSearchChange={handleSearchChange} />
+        <RegionFilter onRegionChange={handleRegionChange} />
+      </div>
 
       <table className={styles.countryHeaderTable}>
         <thead>

@@ -3,6 +3,10 @@
   width: 100%;
 }
 
+.filtersContainer {
+  display: flex;
+}
+
 .countryHeaderTable {
   width: 100%;
   table-layout: fixed;
