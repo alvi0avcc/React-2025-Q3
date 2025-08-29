@@ -1,15 +1,19 @@
 import { useMemo, useState, useCallback } from 'react';
-import type { CountrySelectProps } from '@/types';
+import type { CountrySelectProps, SortField, SortOrder } from '@/types';
 import styles from './countrySelect.module.css';
 import { getCountryRegion, isRegion } from '@/utils/countryRegions';
 import { useComputations } from '@/hooks/useComputations';
 import { RegionFilter } from '@components/regionFilter';
-import { CountriesTable } from '@components/countriesTable';
 import { SearchBar } from '@components/searchBar';
+import { SortControls } from '@components/sortControls';
+import { CountriesTable } from '@components/countriesTable';
+import { sortCountries } from '@/utils/sort';
 
 export function CountrySelect({ data, onCountryChange }: CountrySelectProps) {
   const [selectedRegion, setSelectedRegion] = useState<string>('All');
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [sortField, setSortField] = useState<SortField>('name');
+  const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
 
   const handleRegionChange = useCallback((region: string) => {
     setSelectedRegion(region);
@@ -17,6 +21,11 @@ export function CountrySelect({ data, onCountryChange }: CountrySelectProps) {
 
   const handleSearchChange = useCallback((term: string) => {
     setSearchTerm(term.toLowerCase());
+  }, []);
+
+  const handleSortChange = useCallback((field: SortField, order: SortOrder) => {
+    setSortField(field);
+    setSortOrder(order);
   }, []);
 
   const { getOrCompute: getCachedRegion } = useComputations<string>();
@@ -44,7 +53,6 @@ export function CountrySelect({ data, onCountryChange }: CountrySelectProps) {
     return Object.entries(data)
       .filter(([countryName, countryEntry]) => {
         if (cachedIsRegion(countryName)) return false;
-
         if (selectedRegion !== 'All') {
           const region = cachedGetCountryRegion(
             countryName,
@@ -52,11 +60,9 @@ export function CountrySelect({ data, onCountryChange }: CountrySelectProps) {
           );
           if (region !== selectedRegion) return false;
         }
-
         if (searchTerm) {
           return countryName.toLowerCase().includes(searchTerm);
         }
-
         return true;
       })
       .map(([countryKey]) => countryKey);
@@ -68,18 +74,41 @@ export function CountrySelect({ data, onCountryChange }: CountrySelectProps) {
     cachedGetCountryRegion,
   ]);
 
+  const sortedCountryKeys = useMemo(() => {
+    return sortCountries(data, filteredCountryKeys, sortField, sortOrder);
+  }, [data, filteredCountryKeys, sortField, sortOrder]);
+
   return (
     <div className={styles.countrySelectTableContainer}>
       <div className={styles.filtersContainer}>
         <SearchBar onSearchChange={handleSearchChange} />
         <RegionFilter onRegionChange={handleRegionChange} />
+        <SortControls
+          sortField={sortField}
+          sortOrder={sortOrder}
+          onSortChange={handleSortChange}
+        />
       </div>
 
       <table className={styles.countryHeaderTable}>
         <thead>
           <tr>
-            <th className={styles.countrySelectHeader}>Country Name</th>
-            <th className={styles.countrySelectHeader}>Population</th>
+            <th className={styles.countrySelectHeader}>
+              Country Name
+              {sortField === 'name' && (
+                <span className={styles.sortIndicator}>
+                  {sortOrder === 'asc' ? ' ↑' : ' ↓'}
+                </span>
+              )}
+            </th>
+            <th className={styles.countrySelectHeader}>
+              Population
+              {sortField === 'population' && (
+                <span className={styles.sortIndicator}>
+                  {sortOrder === 'asc' ? ' ↑' : ' ↓'}
+                </span>
+              )}
+            </th>
             <th className={styles.countrySelectHeader}>ISO code</th>
           </tr>
         </thead>
@@ -87,7 +116,7 @@ export function CountrySelect({ data, onCountryChange }: CountrySelectProps) {
 
       <CountriesTable
         data={data}
-        filteredCountryKeys={filteredCountryKeys}
+        filteredCountryKeys={sortedCountryKeys}
         onCountryChange={onCountryChange}
       />
     </div>

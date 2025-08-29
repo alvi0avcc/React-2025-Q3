@@ -34,3 +34,6 @@ export type CountrySelectProps = {
 export type RegionFilterProps = {
   onRegionChange: (region: string) => void;
 };
+
+export type SortField = 'name' | 'population';
+export type SortOrder = 'asc' | 'desc';

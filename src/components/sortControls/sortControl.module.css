@@ -1,0 +1,13 @@
+.sortContainer {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+}
+
+.sortLabel {
+  white-space: nowrap;
+}
+
+.sortSelect {
+  padding: 5px;
+}
