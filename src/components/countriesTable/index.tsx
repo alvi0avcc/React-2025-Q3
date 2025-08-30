@@ -47,12 +47,14 @@ export const CountriesTable = memo(
                     onClick={() => handleCountryClick(countryKey)}
                   >
                     <td className={styles.countryCell}>{countryKey}</td>
-                    <PopulationCell
-                      key={countryKey}
-                      data={data}
-                      countryKey={countryKey}
-                      year={selectedYear}
-                    />
+                    <td>
+                      <PopulationCell
+                        key={countryKey}
+                        data={data}
+                        countryKey={countryKey}
+                        year={selectedYear}
+                      />
+                    </td>
                     <td className={styles.countryCell}>
                       {countryEntry.iso_code ? (
                         <span className={styles.isoCode}>

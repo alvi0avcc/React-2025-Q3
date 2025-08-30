@@ -12,8 +12,8 @@ export const YearSelector = ({
   availableYears,
 }: YearSelectorProps) => {
   const handleYearChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = event.target.value;
-    onYearChange(value === undefined ? undefined : Number(value));
+    const value = Number(event.target.value);
+    onYearChange(value || undefined);
   };
 
   return (
@@ -27,7 +27,7 @@ export const YearSelector = ({
         onChange={handleYearChange}
         className={styles.yearSelector}
       >
-        <option value="last">Latest Year</option>
+        <option value={0}>All Years</option>
         {availableYears.map(year => (
           <option key={year} value={year}>
             {year}

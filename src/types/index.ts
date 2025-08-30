@@ -35,6 +35,7 @@ export type CountryDataYearProps = {
 export type CountrySelectProps = {
   data: CountryList;
   onCountrySelect: (countryKey: string) => void;
+  onYearChange: (year: number | undefined) => void;
 };
 
 export type RegionFilterProps = {

@@ -11,7 +11,11 @@ import { YearSelector } from '@components/yearSelector';
 import { CountriesTable } from '@components/countriesTable';
 import { sortCountries } from '@/utils/sort';
 
-export function CountrySelect({ data, onCountrySelect }: CountrySelectProps) {
+export function CountrySelect({
+  data,
+  onCountrySelect,
+  onYearChange,
+}: CountrySelectProps) {
   const [selectedRegion, setSelectedRegion] = useState<string>('All');
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [sortField, setSortField] = useState<SortField>('name');
@@ -100,9 +104,13 @@ export function CountrySelect({ data, onCountrySelect }: CountrySelectProps) {
     latestYear,
   ]);
 
-  const handleYearChange = useCallback((year: number | undefined) => {
-    setSelectedYear(year);
-  }, []);
+  const handleYearChange = useCallback(
+    (year: number | undefined) => {
+      onYearChange(year);
+      setSelectedYear(year);
+    },
+    [onYearChange]
+  );
 
   return (
     <div className={styles.countrySelectTableContainer}>

@@ -2,7 +2,7 @@ export async function checkLocalFileExists(url: string): Promise<boolean> {
   try {
     const response = await fetch(url, {
       method: 'HEAD',
-      signal: AbortSignal.timeout(3000),
+      signal: AbortSignal.timeout(10_000),
     });
 
     const contentType = response.headers.get('content-type');
