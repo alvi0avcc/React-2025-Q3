@@ -2,18 +2,26 @@ import { useMemo, useState, useCallback } from 'react';
 import type { CountrySelectProps, SortField, SortOrder } from '@/types';
 import styles from './countrySelect.module.css';
 import { getCountryRegion, isRegion } from '@/utils/countryRegions';
+import { getAvailableYears, getLatestAvailableYear } from '@/utils/year';
 import { useComputations } from '@/hooks/useComputations';
 import { RegionFilter } from '@components/regionFilter';
 import { SearchBar } from '@components/searchBar';
 import { SortControls } from '@components/sortControls';
+import { YearSelector } from '@components/yearSelector';
 import { CountriesTable } from '@components/countriesTable';
 import { sortCountries } from '@/utils/sort';
 
-export function CountrySelect({ data, onCountryChange }: CountrySelectProps) {
+export function CountrySelect({ data, onCountrySelect }: CountrySelectProps) {
   const [selectedRegion, setSelectedRegion] = useState<string>('All');
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [sortField, setSortField] = useState<SortField>('name');
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
+  const [selectedYear, setSelectedYear] = useState<number | undefined>(
+    undefined
+  );
+
+  const availableYears = useMemo(() => getAvailableYears(data), [data]);
+  const latestYear = useMemo(() => getLatestAvailableYear(data), [data]);
 
   const handleRegionChange = useCallback((region: string) => {
     setSelectedRegion(region);
@@ -75,12 +83,35 @@ export function CountrySelect({ data, onCountryChange }: CountrySelectProps) {
   ]);
 
   const sortedCountryKeys = useMemo(() => {
-    return sortCountries(data, filteredCountryKeys, sortField, sortOrder);
-  }, [data, filteredCountryKeys, sortField, sortOrder]);
+    return sortCountries(
+      data,
+      filteredCountryKeys,
+      sortField,
+      sortOrder,
+      latestYear,
+      selectedYear
+    );
+  }, [
+    data,
+    filteredCountryKeys,
+    sortField,
+    sortOrder,
+    selectedYear,
+    latestYear,
+  ]);
+
+  const handleYearChange = useCallback((year: number | undefined) => {
+    setSelectedYear(year);
+  }, []);
 
   return (
     <div className={styles.countrySelectTableContainer}>
       <div className={styles.filtersContainer}>
+        <YearSelector
+          selectedYear={selectedYear}
+          onYearChange={handleYearChange}
+          availableYears={availableYears}
+        />
         <SearchBar onSearchChange={handleSearchChange} />
         <RegionFilter onRegionChange={handleRegionChange} />
         <SortControls
@@ -117,7 +148,8 @@ export function CountrySelect({ data, onCountryChange }: CountrySelectProps) {
       <CountriesTable
         data={data}
         filteredCountryKeys={sortedCountryKeys}
-        onCountryChange={onCountryChange}
+        onCountrySelect={onCountrySelect}
+        selectedYear={selectedYear}
       />
     </div>
   );

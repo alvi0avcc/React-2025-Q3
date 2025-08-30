@@ -10,7 +10,7 @@ interface CountriesListProps {
 export const CountriesList = ({ data }: CountriesListProps) => {
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
 
-  const handleCountryChange = (countryKey: string) => {
+  const handleCountrySelect = (countryKey: string) => {
     setSelectedCountry(countryKey);
   };
 
@@ -18,7 +18,7 @@ export const CountriesList = ({ data }: CountriesListProps) => {
     <div className="countries-list">
       <h2>CO2 Emissions Data by Country</h2>
 
-      <CountrySelect data={data} onCountryChange={handleCountryChange} />
+      <CountrySelect data={data} onCountrySelect={handleCountrySelect} />
 
       <CountryDetail countryKey={selectedCountry} data={data} />
     </div>

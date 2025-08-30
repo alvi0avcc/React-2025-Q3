@@ -1,11 +1,15 @@
 import { useMemo } from 'react';
-import type { CountryDataProps } from '@/types';
-import { getLatestPopulation } from '@/utils/getLatestPopulation';
+import type { CountryDataYearProps } from '@/types';
+import { getPopulationForYear } from '@/utils/year';
 
-export const PopulationCell = ({ data, countryKey }: CountryDataProps) => {
+export const PopulationCell = ({
+  data,
+  countryKey,
+  year,
+}: CountryDataYearProps) => {
   const population = useMemo(
-    () => getLatestPopulation(data, countryKey),
-    [data, countryKey]
+    () => getPopulationForYear(data, countryKey, year),
+    [data, countryKey, year]
   );
   return <>{population ?? 'N/A'}</>;
 };

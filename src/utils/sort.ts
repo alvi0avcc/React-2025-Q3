@@ -1,12 +1,16 @@
 import type { CountryList, SortField, SortOrder } from '@/types';
-import { getLatestPopulation } from './getLatestPopulation';
+import { getPopulationForYear } from '@/utils/year';
 
 export const sortCountries = (
   data: CountryList,
   countryKeys: string[],
   sortField: SortField,
-  sortOrder: SortOrder
+  sortOrder: SortOrder,
+  latestYear: number,
+  selectedYear: number | undefined
 ): string[] => {
+  const targetYear = selectedYear === undefined ? latestYear : selectedYear;
+
   return [...countryKeys].sort((a, b) => {
     let valueA: string | number;
     let valueB: string | number;
@@ -15,8 +19,8 @@ export const sortCountries = (
       valueA = a.toLowerCase();
       valueB = b.toLowerCase();
     } else {
-      valueA = getLatestPopulation(data, a) || 0;
-      valueB = getLatestPopulation(data, b) || 0;
+      valueA = getPopulationForYear(data, a, targetYear) || 0;
+      valueB = getPopulationForYear(data, b, targetYear) || 0;
     }
 
     if (typeof valueA === 'string' && typeof valueB === 'string') {

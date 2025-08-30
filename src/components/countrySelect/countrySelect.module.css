@@ -20,3 +20,12 @@
   background-color: #4b4b4b;
   text-align: center;
 }
+
+.currentYearDisplay {
+  margin-left: 8px;
+  padding: 4px 8px;
+  background-color: #e9ecef;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #495057;
+}
