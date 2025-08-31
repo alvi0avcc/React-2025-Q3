@@ -4,10 +4,10 @@ import styles from './countrySelect.module.css';
 import { getCountryRegion, isRegion } from '@/utils/countryRegions';
 import { getAvailableYears, getLatestAvailableYear } from '@/utils/year';
 import { useComputations } from '@/hooks/useComputations';
-import { RegionFilter } from '@components/regionFilter';
-import { SearchBar } from '@components/searchBar';
-import { SortControls } from '@components/sortControls';
-import { YearSelector } from '@components/yearSelector';
+import { RegionFilter } from '@/components/controlElements/regionFilter';
+import { SearchBar } from '@/components/controlElements/searchBar';
+import { SortControls } from '@/components/controlElements/sortControls';
+import { YearSelector } from '@/components/controlElements/yearSelector';
 import { CountriesTable } from '@components/countriesTable';
 import { sortCountries } from '@/utils/sort';
 

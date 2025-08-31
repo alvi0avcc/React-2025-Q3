@@ -46,7 +46,11 @@ export const SortControls = ({
         <option value="population">Population</option>
       </select>
 
+      <label htmlFor="sort-order" className={styles.sortLabel}>
+        ↑↓
+      </label>
       <select
+        id="sort-order"
         value={sortOrder}
         onChange={handleOrderChange}
         className={styles.sortSelect}
