@@ -1,0 +1,17 @@
+.countryScrollTable {
+  height: 200px;
+  overflow-y: auto;
+}
+
+.countrySelectedTable {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.countryLine {
+  cursor: pointer;
+}
+
+.countryLine:hover {
+  background-color: #808080;
+}

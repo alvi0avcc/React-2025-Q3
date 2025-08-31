@@ -1,0 +1,13 @@
+.yearSelectorContainer {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.yearSelectorLabel {
+  white-space: nowrap;
+}
+
+.yearSelector {
+  padding: 5px;
+}

@@ -1,0 +1,31 @@
+.countrySelectTableContainer {
+  border: 1px solid #ddd;
+  width: 100%;
+}
+
+.filtersContainer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.countryHeaderTable {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.countrySelectHeader {
+  padding: 5px;
+  background-color: #4b4b4b;
+  text-align: center;
+}
+
+.currentYearDisplay {
+  margin-left: 8px;
+  padding: 4px 8px;
+  background-color: #e9ecef;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #495057;
+}
